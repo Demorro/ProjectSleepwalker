@@ -33,6 +33,12 @@
     <ClCompile Include="GameBoard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PathFindingGrid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PathFindingNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StateManager.h">
@@ -51,6 +57,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameBoard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PathFindingGrid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PathFindingNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

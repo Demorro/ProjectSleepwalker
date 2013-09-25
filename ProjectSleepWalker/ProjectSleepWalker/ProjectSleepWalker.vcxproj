@@ -86,6 +86,8 @@
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MapTile.cpp" />
+    <ClCompile Include="PathFindingGrid.cpp" />
+    <ClCompile Include="PathFindingNode.cpp" />
     <ClCompile Include="State.cpp" />
     <ClCompile Include="StateManager.cpp" />
   </ItemGroup>
@@ -94,6 +96,8 @@
     <ClInclude Include="GameBoard.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="MapTile.h" />
+    <ClInclude Include="PathFindingGrid.h" />
+    <ClInclude Include="PathFindingNode.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="StateManager.h" />
   </ItemGroup>

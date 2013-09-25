@@ -26,10 +26,11 @@ MapTile::~MapTile(void)
 {
 }
 
-void MapTile::SetTileType(TileType newTileType, sf::Texture &newTileImage)
+void MapTile::SetTile(TileType newTileType, sf::Texture &newTileImage)
 {
 	tileType = newTileType;
 	tileImage = std::make_shared<sf::Texture>(newTileImage);
+	setTexture(*tileImage);
 }
 
 bool MapTile::isPathable()

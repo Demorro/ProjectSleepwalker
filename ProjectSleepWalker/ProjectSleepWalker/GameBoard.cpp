@@ -1,22 +1,25 @@
 #include "GameBoard.h"
 
 
-GameBoard::GameBoard(void)
+GameBoard::GameBoard(void) : pathFindingGrid(MAP_WIDTH,MAP_HEIGHT)
 {
 	emptyTileTexture.loadFromFile(EMPTY_TILE_TEXTURE);
 	grassTileTexture.loadFromFile(GRASS_TILE_TEXTURE);
+	cliffTileTexture.loadFromFile(CLIFF_TILE_TEXTURE);
 
-	if(DEBUG_MAP)
-	{
-		pathFindingNodeDebugTexture.loadFromFile(PATHFINDING_NODE_DEBUG_TEXTURE);
-	}
 
 	PopulateMap();
+	RecalculatePathfindingGrid();
 }
 
 
 GameBoard::~GameBoard(void)
 {
+}
+
+void GameBoard::RecalculatePathfindingGrid()
+{
+	pathFindingGrid.RecalculatePathfindingGrid(map);
 }
 
 void GameBoard::PopulateMap()
@@ -33,33 +36,6 @@ void GameBoard::PopulateMap()
 		}
 	}
 
-	//Populate the pathfindingNodes
-	for(int i = 0; i <= MAP_WIDTH * pathFindingNodeSubdivisionLevel; i++)
-	{
-		std::vector<sf::Vector2f> pathfindingWidthVectorToAdd;
-		pathFindingNodes.push_back(pathfindingWidthVectorToAdd);
-		for(int j = 0; j <= MAP_HEIGHT * pathFindingNodeSubdivisionLevel; j++)
-		{
-			sf::Vector2f nodeToAdd((i * MapTile::WIDTH)/pathFindingNodeSubdivisionLevel, (j * MapTile::HEIGHT)/pathFindingNodeSubdivisionLevel);
-			pathFindingNodes[i].push_back(nodeToAdd);
-		}
-	}
-
-	//Populate the debug sprites for the pathfinding nodes. Would be more efficient in the above loop, but is seperate for better readibilty, and because this wont be active in actual gameplay, so it matters none.
-	if(DEBUG_MAP)
-	{
-		for(int i = 0; i < pathFindingNodes.size(); i++)
-		{
-			std::vector<sf::Sprite> pathfindingDebugSpritesWidthVectorToAdd;
-			pathFindingNodeDebugSprites.push_back(pathfindingDebugSpritesWidthVectorToAdd);
-			for(int j = 0; j < pathFindingNodes[i].size(); j++)
-			{
-				sf::Sprite spriteToAdd(pathFindingNodeDebugTexture);
-				spriteToAdd.setPosition(pathFindingNodes[i][j].x - spriteToAdd.getLocalBounds().width/2, pathFindingNodes[i][j].y - spriteToAdd.getLocalBounds().height/2);
-				pathFindingNodeDebugSprites[i].push_back(spriteToAdd);
-			}
-		}
-	}
 }
 
 void GameBoard::Draw(sf::RenderWindow &renderWindow)
@@ -74,18 +50,11 @@ void GameBoard::Draw(sf::RenderWindow &renderWindow)
 
 	if(DEBUG_MAP)
 	{
-		//Render the debug markers for the pathfinding nodes
-		for(int i = 0; i < pathFindingNodeDebugSprites.size(); i++)
-		{
-			for(int j = 0; j < pathFindingNodeDebugSprites[i].size(); j++)
-			{
-				renderWindow.draw(pathFindingNodeDebugSprites[i][j]);
-			}
-		}
+		pathFindingGrid.DrawGridRepresentation(renderWindow);
 	}
 }
 
-void GameBoard::SetTileType(int tileX, int tileY, MapTile::TileType tileToChangeTo)
+void GameBoard::SetTile(int tileX, int tileY, MapTile::TileType tileToChangeTo)
 {
 
 	//Check that the inputted tile numbers are in range.
@@ -109,14 +78,21 @@ void GameBoard::SetTileType(int tileX, int tileY, MapTile::TileType tileToChange
 	switch (tileToChangeTo)
 	{
 	case MapTile::EMPTY:
-		map[tileX][tileY].SetTileType(MapTile::TileType::EMPTY,emptyTileTexture);
+		map[tileX][tileY].SetTile(MapTile::TileType::EMPTY,emptyTileTexture);
+		map[tileX][tileY].SetPathable(true);
 		break;
 	case MapTile::GRASS:
-		map[tileX][tileY].SetTileType(MapTile::TileType::GRASS,grassTileTexture);
+		map[tileX][tileY].SetTile(MapTile::TileType::GRASS,grassTileTexture);
+		map[tileX][tileY].SetPathable(true);
+		break;
+	case MapTile::CLIFF:
+		map[tileX][tileY].SetTile(MapTile::TileType::CLIFF,cliffTileTexture);
+		map[tileX][tileY].SetPathable(false);
 		break;
 	default:
-		std::cout << "SetTileType has failed, tileToChangeTo not recognised, just setting it to grass" << std::endl;
-		map[tileX][tileY].SetTileType(MapTile::TileType::GRASS,grassTileTexture);
+		std::cout << "SetTile has failed, tileToChangeTo not recognised, just setting it to grass" << std::endl;
+		map[tileX][tileY].SetTile(MapTile::TileType::GRASS,grassTileTexture);
+		map[tileX][tileY].SetPathable(true);
 		break;
 	}
 
@@ -133,34 +109,5 @@ MapTile& GameBoard::GetTile(int tileX, int tileY)
 	}
 
 	std::cout << "Error, attempting to access tile that isn't in the map at X : " << tileX << " Y : " << tileY << std::endl << "Returning map[0][0]. " << std::endl;
-	return map[0][0];
-}
-
-sf::Vector2f& GameBoard::GetPathfindingNode(int pathFindingGridX, int pathFindingGridY)
-{
-	if((pathFindingGridX < pathFindingNodes.size()) && (pathFindingGridX >= 0))
-	{
-		if((pathFindingGridY < pathFindingNodes[pathFindingGridX].size()) && (pathFindingGridY >= 0))
-		{
-			return pathFindingNodes[pathFindingGridX][pathFindingGridY];
-		}
-	}
-
-	std::cout << "Error, attempting to access a pathfinding node that isn't in the grid at X : " << pathFindingGridX << " Y : " << pathFindingGridY << std::endl << "Returning Node 0,0 " << std::endl;
-	return sf::Vector2f(0,0);
-}
-
-MapTile& GameBoard::GetPathfindingNodeTile(int pathFindingGridX, int pathFindingGridY)
-{
-	if((pathFindingGridX < pathFindingNodes.size()) && (pathFindingGridX >= 0))
-	{
-		if((pathFindingGridY < pathFindingNodes[pathFindingGridX].size())  && (pathFindingGridY >= 0))
-		{
-			std::cout << pathFindingGridY/pathFindingNodeSubdivisionLevel;
-			return map[(pathFindingGridX/pathFindingNodeSubdivisionLevel)][(pathFindingGridY/pathFindingNodeSubdivisionLevel)];
-		}
-	}
-
-	std::cout << "Error, attempting to access a Tile(via a pathfindingNode) that isn't in the grid at node position X : " << pathFindingGridX << " Y : " << pathFindingGridY << std::endl << "Returning map[0,0] " << std::endl;
 	return map[0][0];
 }

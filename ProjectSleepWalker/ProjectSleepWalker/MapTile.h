@@ -12,19 +12,20 @@ public:
 	{
 		EMPTY,
 		GRASS,
+		CLIFF,
 	};
 
 	MapTile(int xPos, int yPos, TileType tileType, sf::Texture &tileImage);
 	~MapTile(void);
 
-	void SetTileType(TileType newTileType, sf::Texture &newTileImage);
+	void SetTile(TileType newTileType, sf::Texture &newTileImage);
 
 	//Returns whether this tile can be pathed through
 	bool isPathable();
 	void SetPathable(bool isPathable);
 
-	static const int WIDTH = 40;
-	static const int HEIGHT = 40;
+	static const int WIDTH = 70;
+	static const int HEIGHT = 70;
 private:
 	//The tile image is stored in the map, as opposed to making one for each individual tile.
 	//By using a shared pointer, it ensures the pointed to image will not go out of scope and get deleted even if it should under other circumstances, but also means you dont need to copy the image for every tile.
