@@ -11,7 +11,7 @@ int main()
 	bool eventFired = false;
 
     // Create the main window, needs to be passed into drea
-	sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, 32), "SFML Project");
+	sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, 32), "Project : GateKeeper");
 
 	StateManager* stateManager = new StateManager();
 		

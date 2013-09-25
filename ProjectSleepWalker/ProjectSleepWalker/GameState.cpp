@@ -2,8 +2,6 @@
 
 GameState::GameState() : State(State::GAME_STATE)
 {
-
-
 }
 
 GameState::~GameState()
@@ -24,8 +22,7 @@ void GameState::Update(sf::Event events, bool eventFired)
 
 void GameState::Draw(sf::RenderWindow &renderWindow)
 {
-
-
+	gameBoard.Draw(renderWindow);
 }
 
 void GameState::FindDeltaTime()
@@ -37,5 +34,4 @@ void GameState::FindDeltaTime()
 	newTime = deltaTimeClock.getElapsedTime().asMicroseconds();
 
 	deltaTime = double(newTime - oldTime)/1000000;
-	std::cout << deltaTime << std::endl;
 }

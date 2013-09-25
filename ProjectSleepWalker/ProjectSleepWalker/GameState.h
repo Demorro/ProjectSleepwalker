@@ -2,8 +2,9 @@
 
 #include <SFML\Graphics.hpp>
 #include "State.h"
-#include "State.h"
 #include <iostream>
+#include "MapTile.h"
+#include "GameBoard.h"
 
 class GameState : public State
 {
@@ -26,7 +27,11 @@ public:
 	/** Renders all of the applicable state content. */
 	void Draw(sf::RenderWindow &renderWindow);
 
+
 private:
+
+	//The gameBoard
+	GameBoard gameBoard;
 
 	//Finds the delta time each frame. Multiply any time dependent action by deltaTime to get an action that moves at a speed independent of framerate
 	void FindDeltaTime();
