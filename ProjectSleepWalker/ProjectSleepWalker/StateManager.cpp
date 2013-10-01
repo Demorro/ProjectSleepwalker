@@ -1,19 +1,13 @@
 #include "StateManager.h"
 
-StateManager::StateManager()
+StateManager::StateManager(sf::RenderWindow& window)
 {
 	curState = NULL;
-	
-	SwitchState(State::GAME_STATE);
+	SwitchState(State::MENU_STATE, window);
 }
 
 StateManager::~StateManager()
 {
-	// States
-	delete gameState;
-	gameState = NULL;
-
-
 }
 
 void StateManager::Update(sf::Event events, bool eventFired)
@@ -23,15 +17,14 @@ void StateManager::Update(sf::Event events, bool eventFired)
 		// Switch the state if a signal has been given from the current state
 		if(curState->Switch())
 		{
-			SwitchState(curState->GetTarget());
+			SwitchState(curState->GetTarget(), curState->GetRenderWindow());
 		}
 
 		curState->Update(events, eventFired);
 	}
-
 }
 
-void StateManager::SwitchState(State::StateID stateID)
+void StateManager::SwitchState(State::StateID stateID, sf::RenderWindow& window)
 {
 	// Delete previous state, if set
 	if(curState != NULL)
@@ -40,13 +33,28 @@ void StateManager::SwitchState(State::StateID stateID)
 		curState = NULL;
 	}
 
-	std::cout << "State switched to: ";
+	std::cout << "Switched to: ";
 
 	switch(stateID)
 	{
 		case State::GAME_STATE:
-		std::cout << "GAME_STATE." << std::endl;
-		curState = new GameState();
+			std::cout << "GAME." << std::endl;
+			curState = new GameState(window);
+		break;
+
+		case State::OPTIONS_STATE:
+			std::cout << "OPTIONS." << std::endl;
+			curState = new OptionsState(window);
+		break;
+
+		case State::HELP_STATE:
+			std::cout << "HELP." << std::endl;
+			curState = new HelpState(window);
+		break;
+
+		case State::MENU_STATE:
+			std::cout << "MENU." << std::endl;
+			curState = new MenuState(window);
 		break;
 	}
 
@@ -56,10 +64,10 @@ void StateManager::SwitchState(State::StateID stateID)
 	}
 }
 
-void StateManager::Draw(sf::RenderWindow &renderWindow)
+void StateManager::Draw()
 {
 	if(curState != NULL)
 	{
-		curState->Draw(renderWindow);
+		curState->Draw();
 	}
 }

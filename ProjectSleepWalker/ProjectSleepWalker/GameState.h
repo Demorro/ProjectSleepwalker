@@ -3,30 +3,29 @@
 #include <SFML\Graphics.hpp>
 #include "State.h"
 #include <iostream>
-#include "MapTile.h"
+#include "Tile.h"
 #include "GameBoard.h"
 
 class GameState : public State
 {
 public:
 	/** Constructor initialiser. */
-	GameState();
+	GameState(sf::RenderWindow& window);
 
 	/** Default destructor. */
 	~GameState();
 
 	/** 
-	 * Loads GameState content.
-	 * Returns true if successful, otherwise returns false.
-	 */
+		Loads GameState content.
+		Returns true if successful, otherwise returns false.
+	*/
 	bool Load();
 	
 	/** Main loop. */
 	void Update(sf::Event events, bool eventFired);
 
 	/** Renders all of the applicable state content. */
-	void Draw(sf::RenderWindow &renderWindow);
-
+	void Draw();
 
 private:
 

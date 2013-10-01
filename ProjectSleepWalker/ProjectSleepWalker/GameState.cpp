@@ -1,32 +1,17 @@
 #include "GameState.h"
 
-GameState::GameState() : State(State::GAME_STATE)
+GameState::GameState(sf::RenderWindow& window) 
+	: State(State::GAME_STATE, window), gameBoard(16, 9)
 {
+	gameBoard.RecalculatePathfindingGrid();
 }
 
 GameState::~GameState()
 {
-
-
 }
 
 bool GameState::Load()
-{
-	gameBoard.SetTile(4,4,MapTile::TileType::CLIFF);
-	gameBoard.SetTile(4,5,MapTile::TileType::CLIFF);
-	gameBoard.SetTile(4,6,MapTile::TileType::CLIFF);
-	gameBoard.SetTile(6,4,MapTile::TileType::CLIFF);
-	gameBoard.SetTile(6,5,MapTile::TileType::CLIFF);
-	gameBoard.SetTile(6,6,MapTile::TileType::CLIFF);
-	gameBoard.SetTile(6,7,MapTile::TileType::CLIFF);
-	gameBoard.SetTile(6,8,MapTile::TileType::CLIFF);
-	gameBoard.SetTile(5,8,MapTile::TileType::CLIFF);
-	gameBoard.SetTile(4,8,MapTile::TileType::CLIFF);
-
-	gameBoard.SetTile(9,2,MapTile::TileType::CLIFF);
-	gameBoard.SetTile(11,6,MapTile::TileType::CLIFF);
-	gameBoard.SetTile(13,3,MapTile::TileType::CLIFF);
-	gameBoard.RecalculatePathfindingGrid();
+{	
 	return true;
 }
 
@@ -35,14 +20,14 @@ void GameState::Update(sf::Event events, bool eventFired)
 	FindDeltaTime();
 }
 
-void GameState::Draw(sf::RenderWindow &renderWindow)
+void GameState::Draw()
 {
-	gameBoard.Draw(renderWindow);
+	gameBoard.Draw(window);
 }
 
 void GameState::FindDeltaTime()
 {
-	//Using microseconds give us a high enough accuracy to get smooth movement.
+	// Using microseconds give us a high enough accuracy to get smooth movement.
 
 	sf::Int64 oldTime;
 	oldTime = newTime;

@@ -1,6 +1,5 @@
 #include "PathFindingNode.h"
 
-
 PathFindingNode::PathFindingNode(int xPos, int yPos, bool pathable)
 {
 	nodePosition.x = xPos;
@@ -8,8 +7,7 @@ PathFindingNode::PathFindingNode(int xPos, int yPos, bool pathable)
 	this->pathable = pathable;
 }
 
-
-PathFindingNode::~PathFindingNode(void)
+PathFindingNode::~PathFindingNode()
 {
 }
 

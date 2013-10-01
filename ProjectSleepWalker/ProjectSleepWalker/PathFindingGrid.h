@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
-#include "MapTile.h"
-#include "Assets.h"
+#include "Tile.h"
+#include "ResourceManager.h"
 #include "PathFindingNode.h"
 
 class PathFindingGrid
@@ -10,30 +10,26 @@ public:
 	PathFindingGrid(int mapWidth, int mapHeight);
 	~PathFindingGrid(void);
 
-	PathFindingNode& GetPathfindingNode(int pathFindingGridX, int pathFindingGridY);
-	std::vector<std::vector<PathFindingNode>> &GetPathFindingGrid();
+	PathFindingNode& GetNode(int x, int y);
+	std::vector<std::vector<PathFindingNode>> &GetGrid();
 
-	//Draws a representation of the grid for debugging.
-	void DrawGridRepresentation(sf::RenderWindow &renderWindow);
+	// Draws a representation of the grid for debugging
+	void Draw(sf::RenderWindow &window);
 
-	//Recalculates all the collision on the nodes
-	void RecalculatePathfindingGrid(std::vector<std::vector<MapTile>> &mapTiles);
+	// Recalculates all the collision on the nodes
+	void Recalculate(std::vector<std::vector<Tile>> &mapTiles);
 
 private:
-	//The pathfinding node array, also known as the pathfinding grid
-	std::vector<std::vector<PathFindingNode>> pathFindingNodes;
+	// The pathfinding node array, also known as the pathfinding grid
+	std::vector<std::vector<PathFindingNode>> nodes;
 
-	static const int pathFindingNodeSubdivisionLevel = 4;
-	sf::Texture pathFindingNodeDebugTexturePathable;
-	sf::Texture pathFindingNodeDebugTextureNotPathable;
-	std::vector<std::vector<sf::Sprite>> pathFindingNodeDebugSprites;
+	static const int NODE_SUBDIVISION_LEVEL = 4;
+	std::vector<std::vector<sf::Sprite>> debugNodeSprites;
 
-	//Populates the pathfinding grid on start
-	void PopulatePathFindingGrid(int mapWidth, int mapHeight);
+	// Populates the grid
+	void Populate();
 
-	//Stored from the constructor for calculation what nodes in what tale and what not ... WAHT!?
+	// Stored from the constructor for calculation what nodes in what tale and what not ... WAHT!?
 	int mapWidth;
 	int mapHeight;
-
 };
-

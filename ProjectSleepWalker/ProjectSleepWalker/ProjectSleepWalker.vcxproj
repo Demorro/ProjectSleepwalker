@@ -82,24 +82,40 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Application.cpp" />
+    <ClCompile Include="Button.cpp" />
     <ClCompile Include="GameBoard.cpp" />
     <ClCompile Include="GameState.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="MapTile.cpp" />
+    <ClCompile Include="HelpState.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MenuState.cpp" />
+    <ClCompile Include="Map.cpp" />
+    <ClCompile Include="OptionsState.cpp" />
+    <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="Tile.cpp" />
     <ClCompile Include="PathFindingGrid.cpp" />
     <ClCompile Include="PathFindingNode.cpp" />
     <ClCompile Include="State.cpp" />
     <ClCompile Include="StateManager.cpp" />
+    <ClCompile Include="Unit.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Assets.h" />
+    <ClInclude Include="Application.h" />
+    <ClInclude Include="Button.h" />
     <ClInclude Include="GameBoard.h" />
     <ClInclude Include="GameState.h" />
-    <ClInclude Include="MapTile.h" />
+    <ClInclude Include="HelpState.h" />
+    <ClInclude Include="MenuState.h" />
+    <ClInclude Include="Map.h" />
+    <ClInclude Include="OptionsState.h" />
+    <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="Stringify.h" />
+    <ClInclude Include="Tile.h" />
     <ClInclude Include="PathFindingGrid.h" />
     <ClInclude Include="PathFindingNode.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="StateManager.h" />
+    <ClInclude Include="Unit.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

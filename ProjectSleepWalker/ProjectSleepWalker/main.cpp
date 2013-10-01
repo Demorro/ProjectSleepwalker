@@ -1,41 +1,21 @@
-#include <SFML/Graphics.hpp>
-#include "StateManager.h"
+#include "Application.h"
+#include "ResourceManager.h"
 #include <iostream>
 
-int main()
+void main()
 {
-   // Window dimensions
-	static const int WINDOW_WIDTH = 1280;
-	static const int WINDOW_HEIGHT = 720;
+	// Pre-load resources for app
+	if(resourceManager.Load())
+	{
+		std::cout << "Resources successfully loaded." << std::endl;
 
-	bool eventFired = false;
-
-    // Create the main window, needs to be passed into drea
-	sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, 32), "Project : GateKeeper");
-
-	StateManager* stateManager = new StateManager();
-		
-    while (window.isOpen())
-    {
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-			{
-                window.close();
-			}
-			eventFired = true;
-        }
-		
-		stateManager->Update(event,eventFired);
-        window.clear();
-		stateManager->Draw(window);
-        window.display();
-    }
-
-    // Clean up routine
-	stateManager = NULL;
-	delete stateManager;
-
-    return EXIT_SUCCESS;
+		// Create and run app
+		Application app;
+		app.Run();
+	}
+	else
+	{
+		std::cout << "Error: One or more resources failed to load." << std::endl;
+		std::cin.get(); // Hang program
+	}
 }

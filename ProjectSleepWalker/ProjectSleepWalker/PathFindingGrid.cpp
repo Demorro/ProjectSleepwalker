@@ -1,114 +1,109 @@
 #include "PathFindingGrid.h"
 
-
 PathFindingGrid::PathFindingGrid(int mapWidth, int mapHeight)
 {
-	pathFindingNodeDebugTexturePathable.loadFromFile(PATHFINDING_NODE_DEBUG_TEXTURE_PATHABLE);
-	pathFindingNodeDebugTextureNotPathable.loadFromFile(PATHFINDING_NODE_DEBUG_TEXTURE_NOTPATHABLE);
-	PopulatePathFindingGrid(mapWidth, mapHeight);
-
 	this->mapWidth = mapWidth;
 	this->mapHeight = mapHeight;
 
+	Populate();
 }
 
-
-PathFindingGrid::~PathFindingGrid(void)
+PathFindingGrid::~PathFindingGrid()
 {
 }
 
-void PathFindingGrid::PopulatePathFindingGrid(int MAP_WIDTH, int MAP_HEIGHT)
+void PathFindingGrid::Populate()
 {
-	//Populate the pathfindingNodes
-	for(int i = 0; i <= MAP_WIDTH * pathFindingNodeSubdivisionLevel; i++)
+	// Populate the nodes
+	for(int i = 0; i <= mapWidth * NODE_SUBDIVISION_LEVEL; i++)
 	{
-		std::vector<PathFindingNode> pathfindingWidthVectorToAdd;
-		pathFindingNodes.push_back(pathfindingWidthVectorToAdd);
-		for(int j = 0; j <= MAP_HEIGHT * pathFindingNodeSubdivisionLevel; j++)
+		std::vector<PathFindingNode> nodeColumn;
+		nodes.push_back(nodeColumn);
+		for(int j = 0; j <= mapHeight * NODE_SUBDIVISION_LEVEL; j++)
 		{
-			PathFindingNode nodeToAdd((i * MapTile::WIDTH)/pathFindingNodeSubdivisionLevel, ((j * MapTile::HEIGHT)/pathFindingNodeSubdivisionLevel),true);
-			pathFindingNodes[i].push_back(nodeToAdd);
+			PathFindingNode node((i * Tile::WIDTH)/NODE_SUBDIVISION_LEVEL, ((j * Tile::HEIGHT)/NODE_SUBDIVISION_LEVEL), true);
+			nodes[i].push_back(node);
 		}
 	}
 
-	//Populate the debug sprites for the pathfinding nodes. Would be more efficient in the above loop, but is seperate for better readibilty, and because this wont be active in actual gameplay, so it matters none.
-	for(int i = 0; i < pathFindingNodes.size(); i++)
+	// Populate the debug sprites for the pathfinding nodes. Would be more efficient in the above loop, but is seperate for better readibilty, and because this wont be active in actual gameplay, so it matters none.
+	for(int i = 0; i < nodes.size(); i++)
 	{
-		std::vector<sf::Sprite> pathfindingDebugSpritesWidthVectorToAdd;
-		pathFindingNodeDebugSprites.push_back(pathfindingDebugSpritesWidthVectorToAdd);
-		for(int j = 0; j < pathFindingNodes[i].size(); j++)
+		std::vector<sf::Sprite> debugNodeColumn;
+		debugNodeSprites.push_back(debugNodeColumn);
+		for(int j = 0; j < nodes[i].size(); j++)
 		{
-			sf::Sprite spriteToAdd(pathFindingNodeDebugTexturePathable);
-			spriteToAdd.setPosition(pathFindingNodes[i][j].GetPosition().x - spriteToAdd.getLocalBounds().width/2, pathFindingNodes[i][j].GetPosition().y - spriteToAdd.getLocalBounds().height/2);
-			pathFindingNodeDebugSprites[i].push_back(spriteToAdd);
-		}
-	}
-}
-
-std::vector<std::vector<PathFindingNode>>& PathFindingGrid::GetPathFindingGrid()
-{
-	return pathFindingNodes;
-}
-
-void PathFindingGrid::DrawGridRepresentation(sf::RenderWindow &renderWindow)
-{
-	//Render the debug markers for the pathfinding nodes
-	for(int i = 0; i < pathFindingNodeDebugSprites.size(); i++)
-	{
-		for(int j = 0; j < pathFindingNodeDebugSprites[i].size(); j++)
-		{
-			renderWindow.draw(pathFindingNodeDebugSprites[i][j]);
+			sf::Sprite openNode(resourceManager.GetOpenNodeTex());
+			openNode.setPosition(nodes[i][j].GetPosition().x - openNode.getLocalBounds().width/2, nodes[i][j].GetPosition().y - openNode.getLocalBounds().height/2);
+			debugNodeSprites[i].push_back(openNode);
 		}
 	}
 }
 
-PathFindingNode& PathFindingGrid::GetPathfindingNode(int pathFindingGridX, int pathFindingGridY)
+std::vector<std::vector<PathFindingNode>>& PathFindingGrid::GetGrid()
 {
-	if((pathFindingGridX < pathFindingNodes.size()) && (pathFindingGridX >= 0))
+	return nodes;
+}
+
+void PathFindingGrid::Draw(sf::RenderWindow &window)
+{
+	// Render the debug markers for the pathfinding nodes
+	for(int i = 0; i < debugNodeSprites.size(); i++)
 	{
-		if((pathFindingGridY < pathFindingNodes[pathFindingGridX].size()) && (pathFindingGridY >= 0))
+		for(int j = 0; j < debugNodeSprites[i].size(); j++)
 		{
-			return pathFindingNodes[pathFindingGridX][pathFindingGridY];
+			window.draw(debugNodeSprites[i][j]);
+		}
+	}
+}
+
+PathFindingNode& PathFindingGrid::GetNode(int x, int y)
+{
+	if((x < nodes.size()) && (x >= 0))
+	{
+		if((y < nodes[x].size()) && (y >= 0))
+		{
+			return nodes[x][y];
 		}
 	}
 
-	std::cout << "Error, attempting to access a pathfinding node that isn't in the grid at X : " << pathFindingGridX << " Y : " << pathFindingGridY << std::endl << "Returning Node 0,0 " << std::endl;
-	return pathFindingNodes[0][0];
+	std::cout << "Error, attempting to access a pathfinding node that isn't in the grid at X : " << x << " Y : " << y << std::endl << "Returning node (0, 0)." << std::endl;
+	return nodes[0][0];
 }
 
-void PathFindingGrid::RecalculatePathfindingGrid(std::vector<std::vector<MapTile>> &mapTiles)
+void PathFindingGrid::Recalculate(std::vector<std::vector<Tile>> &mapTiles)
 {
 	for(int i = 0; i < mapTiles.size(); i++)
 	{
 		for(int j = 0; j < mapTiles[i].size(); j++)
 		{
-			if(mapTiles[i][j].isPathable() == false)
+			if(mapTiles[i][j].IsPathable() == false)
 			{
 				//Set the entire tile to be non-pathable
-				for(int k = 0; k < pathFindingNodeSubdivisionLevel + 1; k++)
+				for(int k = 0; k < NODE_SUBDIVISION_LEVEL + 1; k++)
 				{
-					for(int l = 0; l < pathFindingNodeSubdivisionLevel + 1; l++)
+					for(int l = 0; l < NODE_SUBDIVISION_LEVEL + 1; l++)
 					{
-						pathFindingNodes[i * (pathFindingNodeSubdivisionLevel) + k][j * (pathFindingNodeSubdivisionLevel) + l].SetPathable(false);
+						nodes[i * (NODE_SUBDIVISION_LEVEL) + k][j * (NODE_SUBDIVISION_LEVEL) + l].SetPathable(false);
 					}
 				}
 			}
 		}
 	}
 
-	//Loop through the pathfinding notes and set the debug sprites to be correct
-	for(int i = 0; i < pathFindingNodes.size(); i++)
+	// Loop through the pathfinding notes and set the debug sprites to be correct
+	for(int i = 0; i < nodes.size(); i++)
 	{
-		for(int j = 0; j < pathFindingNodes[i].size(); j++)
+		for(int j = 0; j < nodes[i].size(); j++)
 		{
-			//Set the debug sprites to be correct
-			if(pathFindingNodes[i][j].IsPathable())
+			// Set the debug sprites to be correct
+			if(nodes[i][j].IsPathable())
 			{
-				pathFindingNodeDebugSprites[i][j].setTexture(pathFindingNodeDebugTexturePathable);
+				debugNodeSprites[i][j].setTexture(resourceManager.GetOpenNodeTex());
 			}
 			else
 			{
-				pathFindingNodeDebugSprites[i][j].setTexture(pathFindingNodeDebugTextureNotPathable);
+				debugNodeSprites[i][j].setTexture(resourceManager.GetClosedNodeTex());
 			}
 		}
 	}

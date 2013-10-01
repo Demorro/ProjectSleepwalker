@@ -1,6 +1,7 @@
 #include "State.h"
 
-State::State(StateID ID)
+State::State(StateID ID, sf::RenderWindow& window)
+	:	window(window)
 {
 	this->ID = targetID = ID;
 }
@@ -24,4 +25,14 @@ bool State::Switch()
 	{
 		return false;
 	}
+}
+
+void State::SwitchState(State::StateID state)
+{
+	targetID = state;
+}
+
+sf::RenderWindow& State::GetRenderWindow()
+{
+	return window;
 }
