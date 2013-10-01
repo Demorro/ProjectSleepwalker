@@ -3,89 +3,75 @@
 #include <string>
 #include <iostream>
 #include <SFML\Graphics.hpp>
+#include <map>
 
-// Macro for quickly accessing the singleton instance
-#define resourceManager ResourceManager::GetInstance()
+// Toggles debug couts
+#define DEBUG_RESOURCE_MANAGER true
 
 /**
 	RESOURCE MANAGER CLASS
 	----------------------
-	Stores instances of most of the resources used in the application.
 	This class ensures each resource is only loaded and created once.
+	This class should not be instantiated as it is intended to work statically.
 */
 class ResourceManager
 {
 public:
-	/** Returns the singleton instance of the class. */
-	static ResourceManager& GetInstance();
+	/** Clears all hash map entries. */
+	static void Close();
 
-	/** 
-		Loads all of the resources. Returns true if successful, otherwise returns false.
-		This operation can only be called if the resources have not been already loaded.
+	/**
+		Loads a texture into the texture map. 
+		Returns true if successful, otherwise returns false.
 	*/
-	bool Load();
+	static bool LoadTexture(std::string filepath);
 
-	sf::Texture& GetEmptyGrassTileTex();
-	sf::Texture& GetGrassTileTex();
-	sf::Texture& GetCliffTileTex();
+	/**
+		Removes a texture from the texture map if the entry exists. 
+		Returns true if successful, otherwise returns false.
+	*/
+	static bool RemoveTexture(std::string filepath);
 
-	sf::Texture& GetOpenNodeTex();
-	sf::Texture& GetClosedNodeTex();
+	/**
+		Returns a texture from the texture map, if it does not exist it will be created.
+		Returns the texture.
+	*/
+	static sf::Texture& GetTexture(std::string filepath);
 
-	sf::Texture& GetMenuBackgroundTex();
-	sf::Texture& GetOptionsBackgroundTex();
-	sf::Texture& GetHelpBackgroundTex();
+	// References
+	static const std::string OPTIONS_BACKGROUND_TEXTURE;	
+	static const std::string HELP_BACKGROUND_TEXTURE;		
+	static const std::string MENU_BACKGROUND_TEXTURE;		
 
-	sf::Texture& GetPlayButtonTex();
-	sf::Texture& GetHelpButtonTex();
-	sf::Texture& GetOptionsButtonTex();
-	sf::Texture& GetQuitButtonTex();
-	sf::Texture& GetDisplayButtonTex();
-	sf::Texture& GetAudioButtonTex();
-	sf::Texture& GetBackButtonTex();
+	static const std::string PLAY_BUTTON_TEXTURE;
+	static const std::string QUIT_BUTTON_TEXTURE;
+	static const std::string HELP_BUTTON_TEXTURE;
+	static const std::string OPTIONS_BUTTON_TEXTURE;
+	static const std::string BACK_BUTTON_TEXTURE;
+	static const std::string DISPLAY_BUTTON_TEXTURE;
+	static const std::string AUDIO_BUTTON_TEXTURE;
+	static const std::string HOW_TO_PLAY_BUTTON_TEXTURE;
+	static const std::string CONTROLS_BUTTON_TEXTURE;
+
+	static const std::string OPEN_NODE_TEXTURE;
+	static const std::string CLOSED_NODE_TEXTURE;
+
+	static const std::string EMPTY_TILE_TEXTURE;
+	static const std::string GRASS_TILE_TEXTURE;
+	static const std::string CLIFF_TILE_TEXTURE;
 
 private:
-	// Map textures
-	sf::Texture emptyTileTex;
-	sf::Texture grassTileTex;
-	sf::Texture cliffTileTex;
+	/** 
+		Creates an instance of a texture and inserts it into the texture map. 
+		Returns true if the texture was created and inserted into the texture map,
+		otherwise returns false which may be due to an invalid filetype, incorrect filepath.
+	*/
+	static bool CreateTexture(std::string filepath);
 
-	// Debug map textures
-	sf::Texture closedNodeTex;
-	sf::Texture openNodeTex;
+	/** Hash map of all the textures. */
+	static std::map<std::string, sf::Texture*> textureMap;
 
-	// Menu textures
-	sf::Texture menuBackgroundTex;
-	sf::Texture optionsBackgroundTex;
-	sf::Texture helpBackgroundTex;
-	sf::Texture playButtonTex;
-	sf::Texture helpButtonTex;
-	sf::Texture optionsButtonTex;
-	sf::Texture quitButtonTex;
-	sf::Texture displayButtonTex;
-	sf::Texture audioButtonTex;
-	sf::Texture backButtonTex;
-
-	// Filepath prefixes
-	static const std::string PREFIX;
-	static const std::string IMAGES_PREFIX;
-	static const std::string TILES_PREFIX;
-	static const std::string DEBUG_IMAGES_PREFIX;
-	static const std::string STATES_PREFIX;
-	static const std::string HELP_PREFIX;
-	static const std::string MENU_PREFIX;
-	static const std::string OPTIONS_PREFIX;
-
-	/** Determines if the resources have been loaded. */
-	bool loaded;
-
+	// Kept in private to prevent instantiation
 	ResourceManager();
 	~ResourceManager();
-
-	/* 
-		Should not be implemented in ResourceManager.cpp to ensure that no 
-		more than one instance of the ResourceManager class is created. 
-	*/
-    ResourceManager(ResourceManager const&);
-    void operator=(ResourceManager const&);
 };

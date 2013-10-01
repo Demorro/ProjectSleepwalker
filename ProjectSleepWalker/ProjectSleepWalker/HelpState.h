@@ -1,6 +1,7 @@
 #pragma once
 #include "State.h"
 #include "ResourceManager.h"
+#include "Button.h"
 
 class HelpState : public State
 {
@@ -17,4 +18,10 @@ public:
 
 private:
 	sf::Sprite background;
+
+	Button controlsBtn;
+	Button howToPlayBtn;
+	Button backBtn;
+
+	void HandleButtons();
 };

@@ -6,6 +6,9 @@
 #include "Tile.h"
 #include "GameBoard.h"
 
+#define DEFAULT_MAP_WIDTH 16
+#define DEFAULT_MAP_HEIGHT 9
+
 class GameState : public State
 {
 public:

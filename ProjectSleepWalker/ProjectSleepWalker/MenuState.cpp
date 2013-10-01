@@ -3,12 +3,12 @@
 
 MenuState::MenuState(sf::RenderWindow& window)
 	:	State(State::MENU_STATE, window),
-		playBtn(resourceManager.GetPlayButtonTex(), window, 247, 72),
-		helpBtn(resourceManager.GetHelpButtonTex(), window, 247, 72),
-		optionsBtn(resourceManager.GetOptionsButtonTex(), window, 247, 72),
-		quitBtn(resourceManager.GetQuitButtonTex(), window, 247, 72)
+		playBtn(ResourceManager::GetTexture(ResourceManager::PLAY_BUTTON_TEXTURE), window, 247, 72),
+		helpBtn(ResourceManager::GetTexture(ResourceManager::HELP_BUTTON_TEXTURE), window, 247, 72),
+		optionsBtn(ResourceManager::GetTexture(ResourceManager::OPTIONS_BUTTON_TEXTURE), window, 247, 72),
+		quitBtn(ResourceManager::GetTexture(ResourceManager::QUIT_BUTTON_TEXTURE), window, 247, 72)
 {
-	background.setTexture(resourceManager.GetMenuBackgroundTex());
+	background.setTexture(ResourceManager::GetTexture(ResourceManager::MENU_BACKGROUND_TEXTURE));
 
 	// Position menu buttons
 	playBtn.setPosition(55.0f, 610.0f);

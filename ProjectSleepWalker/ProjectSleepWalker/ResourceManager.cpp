@@ -1,184 +1,115 @@
 #include "ResourceManager.h"
 
-const std::string ResourceManager::PREFIX = "../Assets/";
-const std::string ResourceManager::IMAGES_PREFIX = PREFIX + "Images/";
-const std::string ResourceManager::TILES_PREFIX = IMAGES_PREFIX + "Tiles/";
-const std::string ResourceManager::DEBUG_IMAGES_PREFIX = IMAGES_PREFIX + "DebugImages/";
-const std::string ResourceManager::STATES_PREFIX = IMAGES_PREFIX + "States/";
-const std::string ResourceManager::HELP_PREFIX = STATES_PREFIX + "Help/";
-const std::string ResourceManager::MENU_PREFIX = STATES_PREFIX + "Menu/";
-const std::string ResourceManager::OPTIONS_PREFIX = STATES_PREFIX + "Options/";
+const std::string ResourceManager::OPTIONS_BACKGROUND_TEXTURE =	"../Assets/Images/States/Options/OptionsBackground.jpg";
+const std::string ResourceManager::HELP_BACKGROUND_TEXTURE = "../Assets/Images/States/Help/HelpBackground.jpg";
+const std::string ResourceManager::MENU_BACKGROUND_TEXTURE = "../Assets/Images/States/Menu/MenuBackground.jpg";
+
+const std::string ResourceManager::PLAY_BUTTON_TEXTURE = "../Assets/Images/States/Menu/PlayButton.jpg";
+const std::string ResourceManager::QUIT_BUTTON_TEXTURE = "../Assets/Images/States/Menu/QuitButton.jpg";
+const std::string ResourceManager::HELP_BUTTON_TEXTURE = "../Assets/Images/States/Menu/HelpButton.jpg";
+const std::string ResourceManager::OPTIONS_BUTTON_TEXTURE = "../Assets/Images/States/Menu/OptionsButton.jpg";
+const std::string ResourceManager::BACK_BUTTON_TEXTURE = "../Assets/Images/States/BackButton.jpg";
+const std::string ResourceManager::DISPLAY_BUTTON_TEXTURE= "../Assets/Images/States/Options/DisplayButton.jpg";
+const std::string ResourceManager::AUDIO_BUTTON_TEXTURE= "../Assets/Images/States/Options/AudioButton.jpg";
+const std::string ResourceManager::HOW_TO_PLAY_BUTTON_TEXTURE= "../Assets/Images/States/Help/ControlsButton.jpg";
+const std::string ResourceManager::CONTROLS_BUTTON_TEXTURE= "../Assets/Images/States/Help/HowToPlayButton.jpg";
+
+const std::string ResourceManager::OPEN_NODE_TEXTURE = "../Assets/Images/DebugImages/OpenNode.png";
+const std::string ResourceManager::CLOSED_NODE_TEXTURE = "../Assets/Images/DebugImages/ClosedNode.png";
+
+const std::string ResourceManager::EMPTY_TILE_TEXTURE = "../Assets/Images/Tiles/EmptyTile.png";
+const std::string ResourceManager::GRASS_TILE_TEXTURE = "../Assets/Images/Tiles/Grass.png";
+const std::string ResourceManager::CLIFF_TILE_TEXTURE = "../Assets/Images/Tiles/Cliff.png";
+
+// Empty hash map initially
+std::map<std::string, sf::Texture*> ResourceManager::textureMap;
 
 ResourceManager::ResourceManager()
 {
-	loaded = false;
 }
 
 ResourceManager::~ResourceManager()
 {
 }
 
-ResourceManager& ResourceManager::GetInstance()
+void ResourceManager::Close()
 {
-	static ResourceManager instance;
-	return instance;
-}
-
-bool ResourceManager::Load()
-{
-	if(!loaded)
+	if(!textureMap.empty())
 	{
-		if(!emptyTileTex.loadFromFile(TILES_PREFIX + "EmptyTile.png"))
-		{
-			return false;
-		}
-
-		if(!grassTileTex.loadFromFile(TILES_PREFIX + "Grass.png"))
-		{
-			return false;
-		}
-
-		if(!cliffTileTex.loadFromFile(TILES_PREFIX + "Cliff.png"))
-		{
-			return false;
-		}
-
-		if(!openNodeTex.loadFromFile(DEBUG_IMAGES_PREFIX + "OpenNode.png"))
-		{
-			return false;
-		}
-
-		if(!closedNodeTex.loadFromFile(DEBUG_IMAGES_PREFIX + "ClosedNode.png"))
-		{
-			return false;
-		}
-
-		if(!menuBackgroundTex.loadFromFile(MENU_PREFIX + "MenuBackground.jpg"))
-		{
-			return false;
-		}
-
-		if(!optionsBackgroundTex.loadFromFile(OPTIONS_PREFIX + "OptionsBackground.jpg"))
-		{
-			return false;
-		}
-
-		if(!helpBackgroundTex.loadFromFile(HELP_PREFIX + "HelpBackground.jpg"))
-		{
-			return false;
-		}
-
-		if(!playButtonTex.loadFromFile(MENU_PREFIX + "PlayButton.jpg"))
-		{
-			return false;
-		}
-
-		if(!helpButtonTex.loadFromFile(MENU_PREFIX + "HelpButton.jpg"))
-		{
-			return false;
-		}
-
-		if(!optionsButtonTex.loadFromFile(MENU_PREFIX + "OptionsButton.jpg"))
-		{
-			return false;
-		}
-
-		if(!quitButtonTex.loadFromFile(MENU_PREFIX + "QuitButton.jpg"))
-		{
-			return false;
-		}
-
-		if(!displayButtonTex.loadFromFile(OPTIONS_PREFIX + "DisplayButton.jpg"))
-		{
-			return false;
-		}
-
-		if(!audioButtonTex.loadFromFile(OPTIONS_PREFIX + "AudioButton.jpg"))
-		{
-			return false;
-		}
-
-		if(!backButtonTex.loadFromFile(STATES_PREFIX + "BackButton.jpg"))
-		{
-			return false;
-		}
+		textureMap.clear();
 	}
-	
-	loaded = true;
-	return loaded;
+
+	if(DEBUG_RESOURCE_MANAGER)
+	{
+		std::cout << "Texture map cleared." << std::endl;
+	}
 }
 
-sf::Texture& ResourceManager::GetEmptyGrassTileTex()
+bool ResourceManager::LoadTexture(std::string filepath)
 {
-	return emptyTileTex;
+	// Entry not found
+	if(textureMap.find(filepath) == textureMap.end())
+	{
+		return CreateTexture(filepath);
+	}
+
+	if(DEBUG_RESOURCE_MANAGER)
+	{
+		std::cout << "Texture could not be loaded: Texture already exists in texture map." << std::endl;
+	}
+	return false;
 }
 
-sf::Texture& ResourceManager::GetGrassTileTex()
+bool ResourceManager::RemoveTexture(std::string filepath)
 {
-	return grassTileTex;
+	// Entry found
+	if(textureMap.find(filepath) != textureMap.end())
+	{
+		textureMap.erase(filepath);
+		
+		if(DEBUG_RESOURCE_MANAGER)
+		{
+			std::cout << "Texture successfully removed from texture map." << std::endl;
+		}
+		return true;
+	}
+
+	if(DEBUG_RESOURCE_MANAGER)
+	{
+		std::cout << "Cannot remove texture: Texture does not exist in the texture map." << std::endl;
+	}
+	return false;
 }
 
-sf::Texture& ResourceManager::GetCliffTileTex()
+sf::Texture& ResourceManager::GetTexture(std::string filepath)
 {
-	return cliffTileTex;
+	// Entry not found
+	if(textureMap.find(filepath) == textureMap.end())
+	{
+		CreateTexture(filepath);
+	}
+
+	return *textureMap.at(filepath);
 }
 
-sf::Texture& ResourceManager::GetOpenNodeTex()
+bool ResourceManager::CreateTexture(std::string filepath)
 {
-	return openNodeTex;
-}
+	// Texture load
+	sf::Texture* texture = new sf::Texture();
+	if(!texture->loadFromFile(filepath))
+	{
+		if(DEBUG_RESOURCE_MANAGER)
+		{
+			std::cout << "ResourceManager::CreateTexture() error: Texture failed to load." << std::endl;
+		}
+		return false;
+	}
 
-sf::Texture& ResourceManager::GetClosedNodeTex()
-{
-	return closedNodeTex;
-}
+	textureMap.insert(std::pair<std::string, sf::Texture*>(filepath, texture));
 
-sf::Texture& ResourceManager::GetMenuBackgroundTex()
-{
-	return menuBackgroundTex;
-}
-
-sf::Texture& ResourceManager::GetOptionsBackgroundTex()
-{
-	return optionsBackgroundTex;
-}
-
-sf::Texture& ResourceManager::GetHelpBackgroundTex()
-{
-	return helpBackgroundTex;
-}
-
-sf::Texture& ResourceManager::GetPlayButtonTex()
-{
-	return playButtonTex;
-}
-
-sf::Texture& ResourceManager::GetHelpButtonTex()
-{
-	return helpButtonTex;
-}
-
-sf::Texture& ResourceManager::GetOptionsButtonTex()
-{
-	return optionsButtonTex;
-}
-
-sf::Texture& ResourceManager::GetQuitButtonTex()
-{
-	return quitButtonTex;
-}
-
-sf::Texture& ResourceManager::GetDisplayButtonTex()
-{
-	return displayButtonTex;
-}
-
-sf::Texture& ResourceManager::GetAudioButtonTex()
-{
-	return audioButtonTex;
-}
-
-sf::Texture& ResourceManager::GetBackButtonTex()
-{
-	return backButtonTex;
+	if(DEBUG_RESOURCE_MANAGER)
+	{
+		std::cout << "Texture successfully loaded and stored in texture map." << std::endl;
+	}
+	return true;
 }

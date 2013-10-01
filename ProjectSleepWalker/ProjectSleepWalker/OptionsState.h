@@ -1,6 +1,7 @@
 #pragma once
 #include "State.h"
 #include "ResourceManager.h"
+#include "Button.h"
 
 class OptionsState : public State
 {
@@ -18,4 +19,9 @@ public:
 private:
 	sf::Sprite background;
 
+	Button displayBtn;
+	Button audioBtn;
+	Button backBtn;
+
+	void HandleButtons();
 };

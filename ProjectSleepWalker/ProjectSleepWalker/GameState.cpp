@@ -1,7 +1,7 @@
 #include "GameState.h"
 
 GameState::GameState(sf::RenderWindow& window) 
-	: State(State::GAME_STATE, window), gameBoard(16, 9)
+	: State(State::GAME_STATE, window), gameBoard(DEFAULT_MAP_WIDTH, DEFAULT_MAP_HEIGHT)
 {
 	gameBoard.RecalculatePathfindingGrid();
 }

@@ -3,13 +3,10 @@
 #include "ResourceManager.h"
 #include "Tile.h"
 
-#define DEFAULT_MAP_WIDTH 16
-#define DEFAULT_MAP_HEIGHT 9
-
 class Map
 {
 public:
-	Map(int width = DEFAULT_MAP_WIDTH, int height = DEFAULT_MAP_HEIGHT);
+	Map(int width, int height);
 	~Map();
 
 	// Populates the map with tiles, run on initialisation of the map
