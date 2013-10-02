@@ -18,7 +18,7 @@ public:
 		@param BUTTON_WIDTH - The width of the button.
 		@param BUTTON_HEIGHT - The height of the button.
 	*/
-	Button(sf::Texture& buttonTex, sf::RenderWindow& window, const unsigned int BUTTON_WIDTH, const unsigned int BUTTON_HEIGHT);
+	Button(sf::Texture& buttonTex, const unsigned int BUTTON_WIDTH, const unsigned int BUTTON_HEIGHT);
 
 	~Button();
 
@@ -58,7 +58,4 @@ private:
 
 	 const unsigned int BUTTON_WIDTH;
 	 const unsigned int BUTTON_HEIGHT;
-
-	 /** Pointer to the application window. */
-	 sf::RenderWindow& window;
 };

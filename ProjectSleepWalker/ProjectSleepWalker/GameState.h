@@ -13,7 +13,7 @@ class GameState : public State
 {
 public:
 	/** Constructor initialiser. */
-	GameState(sf::RenderWindow& window);
+	GameState();
 
 	/** Default destructor. */
 	~GameState();
@@ -28,7 +28,7 @@ public:
 	void Update(sf::Event events, bool eventFired);
 
 	/** Renders all of the applicable state content. */
-	void Draw();
+	void Draw(sf::RenderWindow& window);
 
 private:
 

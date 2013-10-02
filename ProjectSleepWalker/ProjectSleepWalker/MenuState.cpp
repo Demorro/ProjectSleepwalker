@@ -1,14 +1,14 @@
 #include "MenuState.h"
 #include "Application.h"
 
-MenuState::MenuState(sf::RenderWindow& window)
-	:	State(State::MENU_STATE, window),
-		playBtn(ResourceManager::GetTexture(ResourceManager::PLAY_BUTTON_TEXTURE), window, 247, 72),
-		helpBtn(ResourceManager::GetTexture(ResourceManager::HELP_BUTTON_TEXTURE), window, 247, 72),
-		optionsBtn(ResourceManager::GetTexture(ResourceManager::OPTIONS_BUTTON_TEXTURE), window, 247, 72),
-		quitBtn(ResourceManager::GetTexture(ResourceManager::QUIT_BUTTON_TEXTURE), window, 247, 72)
+MenuState::MenuState()
+	:	State(State::MENU_STATE),
+		playBtn(TextureManager::GetTexture(Texture::PLAY_BUTTON), 247, 72),
+		helpBtn(TextureManager::GetTexture(Texture::HELP_BUTTON), 247, 72),
+		optionsBtn(TextureManager::GetTexture(Texture::OPTIONS_BUTTON), 247, 72),
+		quitBtn(TextureManager::GetTexture(Texture::QUIT_BUTTON), 247, 72)
 {
-	background.setTexture(ResourceManager::GetTexture(ResourceManager::MENU_BACKGROUND_TEXTURE));
+	background.setTexture(TextureManager::GetTexture(Texture::MENU_BACKGROUND));
 
 	// Position menu buttons
 	playBtn.setPosition(55.0f, 610.0f);
@@ -26,7 +26,7 @@ void MenuState::Update(sf::Event events, bool eventFired)
 	HandleButtons();
 }
 
-void MenuState::Draw()
+void MenuState::Draw(sf::RenderWindow& window)
 {
 	window.draw(background);
 	window.draw(playBtn);

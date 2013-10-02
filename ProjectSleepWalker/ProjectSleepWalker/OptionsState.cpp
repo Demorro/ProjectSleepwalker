@@ -1,12 +1,12 @@
 #include "OptionsState.h"
 
-OptionsState::OptionsState(sf::RenderWindow& window)
-	:	State(State::OPTIONS_STATE, window),
-		displayBtn(ResourceManager::GetTexture(ResourceManager::DISPLAY_BUTTON_TEXTURE), window, 202, 52),
-		audioBtn(ResourceManager::GetTexture(ResourceManager::AUDIO_BUTTON_TEXTURE), window, 202, 52),
-		backBtn(ResourceManager::GetTexture(ResourceManager::BACK_BUTTON_TEXTURE), window, 202, 52)
+OptionsState::OptionsState()
+	:	State(State::OPTIONS_STATE),
+		displayBtn(TextureManager::GetTexture(Texture::DISPLAY_BUTTON), 202, 52),
+		audioBtn(TextureManager::GetTexture(Texture::AUDIO_BUTTON), 202, 52),
+		backBtn(TextureManager::GetTexture(Texture::BACK_BUTTON), 202, 52)
 {
-	background.setTexture(ResourceManager::GetTexture(ResourceManager::OPTIONS_BACKGROUND_TEXTURE));
+	background.setTexture(TextureManager::GetTexture(Texture::OPTIONS_BACKGROUND));
 
 	// Position buttons
 	
@@ -25,7 +25,7 @@ void OptionsState::Update(sf::Event events, bool eventFired)
 	HandleButtons();
 }
 
-void OptionsState::Draw()
+void OptionsState::Draw(sf::RenderWindow& window)
 {
 	window.draw(background);
 	window.draw(displayBtn);

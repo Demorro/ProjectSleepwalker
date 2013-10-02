@@ -1,18 +1,18 @@
 #pragma once
 #include "State.h"
-#include "ResourceManager.h"
+#include "TextureManager.h"
 #include "Button.h"
 
 class MenuState : public State
 {
 public:
-	MenuState(sf::RenderWindow& window);
+	MenuState();
 
 	~MenuState();
 
 	void Update(sf::Event events, bool eventFired);
 
-	void Draw();
+	void Draw(sf::RenderWindow& window);
 
 	bool Load();
 

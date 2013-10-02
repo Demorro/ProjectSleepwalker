@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
 #include "Tile.h"
-#include "ResourceManager.h"
+#include "TextureManager.h"
 #include "PathFindingNode.h"
 
 class PathFindingGrid

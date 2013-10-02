@@ -19,7 +19,7 @@ void Map::Generate()
 		tiles.push_back(tileColumn);
 		for(int j = 0; j < height; j++)
 		{
-			Tile tile(i * Tile::WIDTH, j * Tile::HEIGHT, Tile::GRASS, ResourceManager::GetTexture(ResourceManager::GRASS_TILE_TEXTURE));
+			Tile tile(i * Tile::WIDTH, j * Tile::HEIGHT, Tile::GRASS, TextureManager::GetTexture(Texture::GRASS_TILE));
 			tiles[i].push_back(tile);
 		}
 	}
@@ -50,17 +50,17 @@ void Map::SetTile(int tileX, int tileY, Tile::TileType tileType)
 	switch (tileType)
 	{
 		case Tile::EMPTY:
-			tiles[tileX][tileY].SetTile(Tile::EMPTY, ResourceManager::GetTexture(ResourceManager::EMPTY_TILE_TEXTURE), true);
+			tiles[tileX][tileY].SetTile(Tile::EMPTY, TextureManager::GetTexture(Texture::EMPTY_TILE), true);
 			break;
 		case Tile::GRASS:
-			tiles[tileX][tileY].SetTile(Tile::GRASS, ResourceManager::GetTexture(ResourceManager::GRASS_TILE_TEXTURE), true);
+			tiles[tileX][tileY].SetTile(Tile::GRASS, TextureManager::GetTexture(Texture::GRASS_TILE), true);
 			break;
 		case Tile::CLIFF:
-			tiles[tileX][tileY].SetTile(Tile::CLIFF, ResourceManager::GetTexture(ResourceManager::CLIFF_TILE_TEXTURE), false);
+			tiles[tileX][tileY].SetTile(Tile::CLIFF, TextureManager::GetTexture(Texture::CLIFF_TILE), false);
 			break;
 		default:
 			std::cout << "Map::SetTile() error : tileType not recognised - empty texture assigned." << std::endl;
-			tiles[tileX][tileY].SetTile(Tile::EMPTY, ResourceManager::GetTexture(ResourceManager::EMPTY_TILE_TEXTURE), true);
+			tiles[tileX][tileY].SetTile(Tile::EMPTY, TextureManager::GetTexture(Texture::EMPTY_TILE), true);
 			break;
 	}
 }

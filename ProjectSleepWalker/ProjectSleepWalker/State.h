@@ -14,7 +14,7 @@ public:
 	};
 
 	/** Constructor intended to set the inital ID. */
-	State(StateID ID, sf::RenderWindow& window);
+	State(StateID ID);
 
 	/** Base destructor. */
 	virtual ~State();
@@ -23,7 +23,7 @@ public:
 	virtual void Update(sf::Event events, bool eventFired) = 0;
 
 	/** Abstract method intended to render all objects of the state. */
-	virtual void Draw() = 0;
+	virtual void Draw(sf::RenderWindow& window) = 0;
 
 	/**
 		* Abstract method intended to load state content.
@@ -34,8 +34,6 @@ public:
 
 	/** Returns the targetID variable. */
 	StateID GetTarget();
-
-	sf::RenderWindow& GetRenderWindow();
 		
 	/** Returns true if targetID differs from ID, otherwise returns false. */
 	bool Switch();
@@ -46,9 +44,6 @@ protected:
 
 	/** Sets the state targetID value to the param. */
 	void SwitchState(StateID state);
-
-	/** Pointer to the window instance of the application. */
-	sf::RenderWindow& window;
 
 private:
 	/** The unique ID of the desired state to switch to. */

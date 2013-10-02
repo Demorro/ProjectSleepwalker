@@ -1,13 +1,14 @@
 #include "Application.h"
 
 bool Application::running = true;
+sf::RenderWindow* Application::windowRef = NULL;
 
 Application::Application()
 {
 	// Initialise window
 	window.create(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, 32), WINDOW_TITLE);
 
-	stateManager = new StateManager(window);
+	SetWindow(&window);
 
 	// Load and set window icon
 	//icon = assets.GetIconImage();
@@ -23,8 +24,6 @@ Application::Application()
 
 Application::~Application()
 {
-	delete stateManager;
-	stateManager = NULL;
 }
 
 void Application::Run()
@@ -43,9 +42,9 @@ void Application::Run()
 			eventFired = true;
         }
 
-		stateManager->Update(event, eventFired);
+		stateManager.Update(event, eventFired);
         window.clear();
-		stateManager->Draw();
+		stateManager.Draw(window);
         window.display();
 
 		if(!GetRunning())
@@ -63,4 +62,14 @@ void Application::SetRunning(bool running)
 bool Application::GetRunning()
 {
 	return running;
+}
+
+sf::RenderWindow& Application::GetWindow()
+{
+	return *windowRef;
+}
+
+void Application::SetWindow(sf::RenderWindow* window)
+{
+	windowRef = window;
 }

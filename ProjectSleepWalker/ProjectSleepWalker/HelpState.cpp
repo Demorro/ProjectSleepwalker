@@ -1,12 +1,12 @@
 #include "HelpState.h"
 
-HelpState::HelpState(sf::RenderWindow& window)
-	:	State(State::HELP_STATE, window),
-		controlsBtn(ResourceManager::GetTexture(ResourceManager::CONTROLS_BUTTON_TEXTURE), window, 202, 52),
-		howToPlayBtn(ResourceManager::GetTexture(ResourceManager::HOW_TO_PLAY_BUTTON_TEXTURE), window, 202, 52),
-		backBtn(ResourceManager::GetTexture(ResourceManager::BACK_BUTTON_TEXTURE), window, 202, 52)
+HelpState::HelpState()
+	:	State(State::HELP_STATE),
+		controlsBtn(TextureManager::GetTexture(Texture::CONTROLS_BUTTON), 202, 52),
+		howToPlayBtn(TextureManager::GetTexture(Texture::HOW_TO_PLAY_BUTTON), 202, 52),
+		backBtn(TextureManager::GetTexture(Texture::BACK_BUTTON), 202, 52)
 {
-	background.setTexture(ResourceManager::GetTexture(ResourceManager::HELP_BACKGROUND_TEXTURE));
+	background.setTexture(TextureManager::GetTexture(Texture::HELP_BACKGROUND));
 
 	// Position buttons
 	controlsBtn.setPosition(110.0f, 160.0f);
@@ -23,7 +23,7 @@ void HelpState::Update(sf::Event events, bool eventFired)
 	HandleButtons();
 }
 
-void HelpState::Draw()
+void HelpState::Draw(sf::RenderWindow& window)
 {
 	window.draw(background);
 	window.draw(controlsBtn);

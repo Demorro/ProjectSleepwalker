@@ -6,15 +6,15 @@
 #include <map>
 
 // Toggles debug couts
-#define DEBUG_RESOURCE_MANAGER true
+#define DEBUG_TEXTURE_MANAGER true
 
 /**
-	RESOURCE MANAGER CLASS
+	TEXTURE MANAGER CLASS
 	----------------------
-	This class ensures each resource is only loaded and created once.
+	This class ensures each texture used within the game is only loaded and created once.
 	This class should not be instantiated as it is intended to work statically.
 */
-class ResourceManager
+class TextureManager
 {
 public:
 	/** Clears all hash map entries. */
@@ -38,28 +38,6 @@ public:
 	*/
 	static sf::Texture& GetTexture(std::string filepath);
 
-	// References
-	static const std::string OPTIONS_BACKGROUND_TEXTURE;	
-	static const std::string HELP_BACKGROUND_TEXTURE;		
-	static const std::string MENU_BACKGROUND_TEXTURE;		
-
-	static const std::string PLAY_BUTTON_TEXTURE;
-	static const std::string QUIT_BUTTON_TEXTURE;
-	static const std::string HELP_BUTTON_TEXTURE;
-	static const std::string OPTIONS_BUTTON_TEXTURE;
-	static const std::string BACK_BUTTON_TEXTURE;
-	static const std::string DISPLAY_BUTTON_TEXTURE;
-	static const std::string AUDIO_BUTTON_TEXTURE;
-	static const std::string HOW_TO_PLAY_BUTTON_TEXTURE;
-	static const std::string CONTROLS_BUTTON_TEXTURE;
-
-	static const std::string OPEN_NODE_TEXTURE;
-	static const std::string CLOSED_NODE_TEXTURE;
-
-	static const std::string EMPTY_TILE_TEXTURE;
-	static const std::string GRASS_TILE_TEXTURE;
-	static const std::string CLIFF_TILE_TEXTURE;
-
 private:
 	/** 
 		Creates an instance of a texture and inserts it into the texture map. 
@@ -70,8 +48,38 @@ private:
 
 	/** Hash map of all the textures. */
 	static std::map<std::string, sf::Texture*> textureMap;
-
+	
 	// Kept in private to prevent instantiation
-	ResourceManager();
-	~ResourceManager();
+	TextureManager();
+	~TextureManager();
+};
+
+// Texture references
+class Texture
+{
+public:
+	static const std::string OPTIONS_BACKGROUND;	
+	static const std::string HELP_BACKGROUND;		
+	static const std::string MENU_BACKGROUND;		
+
+	static const std::string PLAY_BUTTON;
+	static const std::string QUIT_BUTTON;
+	static const std::string HELP_BUTTON;
+	static const std::string OPTIONS_BUTTON;
+	static const std::string BACK_BUTTON;
+	static const std::string DISPLAY_BUTTON;
+	static const std::string AUDIO_BUTTON;
+	static const std::string HOW_TO_PLAY_BUTTON;
+	static const std::string CONTROLS_BUTTON;
+
+	static const std::string OPEN_NODE;
+	static const std::string CLOSED_NODE;
+
+	static const std::string EMPTY_TILE;
+	static const std::string GRASS_TILE;
+	static const std::string CLIFF_TILE;
+
+private:
+	Texture();
+	~Texture();
 };

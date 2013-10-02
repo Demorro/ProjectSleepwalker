@@ -1,7 +1,7 @@
 #include "GameState.h"
 
-GameState::GameState(sf::RenderWindow& window) 
-	: State(State::GAME_STATE, window), gameBoard(DEFAULT_MAP_WIDTH, DEFAULT_MAP_HEIGHT)
+GameState::GameState() 
+	: State(State::GAME_STATE), gameBoard(DEFAULT_MAP_WIDTH, DEFAULT_MAP_HEIGHT)
 {
 	gameBoard.RecalculatePathfindingGrid();
 }
@@ -20,7 +20,7 @@ void GameState::Update(sf::Event events, bool eventFired)
 	FindDeltaTime();
 }
 
-void GameState::Draw()
+void GameState::Draw(sf::RenderWindow& window)
 {
 	gameBoard.Draw(window);
 }

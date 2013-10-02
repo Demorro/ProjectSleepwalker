@@ -1,18 +1,18 @@
 #pragma once
 #include "State.h"
-#include "ResourceManager.h"
+#include "TextureManager.h"
 #include "Button.h"
 
 class OptionsState : public State
 {
 public:
-	OptionsState(sf::RenderWindow& window);
+	OptionsState();
 
 	~OptionsState();
 
 	void Update(sf::Event events, bool eventFired);
 
-	void Draw();
+	void Draw(sf::RenderWindow& window);
 
 	bool Load();
 

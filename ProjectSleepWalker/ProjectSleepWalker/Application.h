@@ -23,16 +23,21 @@ public:
 
 	// Setters
 	static void SetRunning(bool running);
+	static void SetWindow(sf::RenderWindow* window);
 
 	// Getters
 	static bool GetRunning();
+	static sf::RenderWindow& GetWindow();
 
 private:
-	StateManager* stateManager;
+	StateManager stateManager;
 
 	/** Instance of the window used to catch events and display graphical content. */
 	sf::RenderWindow window;
 
 	/** Determines whether or not the application should continue to process. */
 	static bool running;
+
+	/** Pointer to the window instance. */
+	static sf::RenderWindow* windowRef;
 };

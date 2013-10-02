@@ -11,7 +11,7 @@ class StateManager
 {
 public:
 	/** Default constructor. */
-	StateManager(sf::RenderWindow& window);
+	StateManager();
 
 	/** Default destructor. */
 	~StateManager();
@@ -21,13 +21,13 @@ public:
 		@param stateID - The ID of the target state.
 		@param window - Pointer to the application window.
 	*/
-	void SwitchState(State::StateID stateID, sf::RenderWindow& window);
+	void SwitchState(State::StateID stateID);
 
 	/** Main loop which updates the current state. */
 	void Update(sf::Event events, bool eventFired);
 
 	/** Draws the current state. */
-	void Draw();
+	void Draw(sf::RenderWindow& window);
 
 private:
 	/** A pointer to the current state. */

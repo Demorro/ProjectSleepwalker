@@ -33,7 +33,7 @@ void PathFindingGrid::Populate()
 		debugNodeSprites.push_back(debugNodeColumn);
 		for(int j = 0; j < nodes[i].size(); j++)
 		{
-			sf::Sprite openNode(ResourceManager::GetTexture(ResourceManager::OPEN_NODE_TEXTURE));
+			sf::Sprite openNode(TextureManager::GetTexture(Texture::OPEN_NODE));
 			openNode.setPosition(nodes[i][j].GetPosition().x - openNode.getLocalBounds().width/2, nodes[i][j].GetPosition().y - openNode.getLocalBounds().height/2);
 			debugNodeSprites[i].push_back(openNode);
 		}
@@ -99,11 +99,11 @@ void PathFindingGrid::Recalculate(std::vector<std::vector<Tile>> &mapTiles)
 			// Set the debug sprites to be correct
 			if(nodes[i][j].IsPathable())
 			{
-				debugNodeSprites[i][j].setTexture(ResourceManager::GetTexture(ResourceManager::OPEN_NODE_TEXTURE));
+				debugNodeSprites[i][j].setTexture(TextureManager::GetTexture(Texture::OPEN_NODE));
 			}
 			else
 			{
-				debugNodeSprites[i][j].setTexture(ResourceManager::GetTexture(ResourceManager::CLOSED_NODE_TEXTURE));
+				debugNodeSprites[i][j].setTexture(TextureManager::GetTexture(Texture::CLOSED_NODE));
 			}
 		}
 	}

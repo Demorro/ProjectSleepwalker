@@ -1,7 +1,8 @@
 #include "Button.h"
+#include "Application.h"
 
-Button::Button(sf::Texture& buttonTex, sf::RenderWindow& window, const unsigned int BUTTON_WIDTH, const unsigned int BUTTON_HEIGHT) 
-	:	BUTTON_WIDTH(BUTTON_WIDTH), BUTTON_HEIGHT(BUTTON_HEIGHT), window(window)
+Button::Button(sf::Texture& buttonTex, const unsigned int BUTTON_WIDTH, const unsigned int BUTTON_HEIGHT) 
+	:	BUTTON_WIDTH(BUTTON_WIDTH), BUTTON_HEIGHT(BUTTON_HEIGHT)
 {
 	setTexture(buttonTex);
 	SetState(BUTTON_DEFAULT);
@@ -73,7 +74,7 @@ bool Button::Up(sf::Mouse::Button mouseButton)
 
 bool Button::Over()
 {
-	if(getGlobalBounds().contains(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y))
+	if(getGlobalBounds().contains(sf::Mouse::getPosition(Application::GetWindow()).x, sf::Mouse::getPosition(Application::GetWindow()).y))
 	{
 		return true;
 	}

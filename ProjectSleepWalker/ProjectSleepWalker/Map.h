@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ResourceManager.h"
+#include "TextureManager.h"
 #include "Tile.h"
 
 class Map
