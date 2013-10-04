@@ -6,6 +6,14 @@ PathFindingGrid::PathFindingGrid(int mapWidth, int mapHeight)
 	this->mapHeight = mapHeight;
 
 	Populate();
+
+	nodeDebugCircle.setFillColor(sf::Color::Transparent);
+	nodeDebugCircle.setOutlineColor(sf::Color::Red);
+	nodeDebugCircle.setOutlineThickness(2.0f);
+	nodeDebugCircle.setRadius(8.0f);
+
+	nodeDebugCircle.setPosition(0,0);
+	nodeDebugCircle.setOrigin(nodeDebugCircle.getRadius(),nodeDebugCircle.getRadius());
 }
 
 PathFindingGrid::~PathFindingGrid()
@@ -21,7 +29,7 @@ void PathFindingGrid::Populate()
 		nodes.push_back(nodeColumn);
 		for(int j = 0; j <= mapHeight * NODE_SUBDIVISION_LEVEL; j++)
 		{
-			PathFindingNode node((i * Tile::WIDTH)/NODE_SUBDIVISION_LEVEL, ((j * Tile::HEIGHT)/NODE_SUBDIVISION_LEVEL), true);
+			PathFindingNode node((i * Tile::WIDTH)/NODE_SUBDIVISION_LEVEL, ((j * Tile::HEIGHT)/NODE_SUBDIVISION_LEVEL), true, i, j);
 			nodes[i].push_back(node);
 		}
 	}
@@ -40,9 +48,95 @@ void PathFindingGrid::Populate()
 	}
 }
 
-std::vector<std::vector<PathFindingNode>>& PathFindingGrid::GetGrid()
+PathFindingNode* PathFindingGrid::GetNode(int x, int y)
 {
-	return nodes;
+	if(NodeIsInGrid(x,y))
+	{
+		return &nodes[x][y];
+	}
+
+	std::cout << "Error, attempting to access a pathfinding node that isn't in the grid at X : " << x << " Y : " << y << std::endl << "Returning NULL Pointer." << std::endl;
+	return NULL;
+}
+
+//Pass in the nav-grid x/y for the startnode, as well as the direction and how far you want to go to get a neighbor.
+PathFindingNode* PathFindingGrid::GetNodeNeighbor(int startNodeXGridPos, int startNodeYGridPos, PathFindingGrid::Direction neighborDirection, int noOfJumps)
+{
+	if(!NodeIsInGrid(startNodeXGridPos,startNodeYGridPos))
+	{
+		std::cout << "Start node not in grid, returning NULL" << std::endl;
+		return NULL;
+	}
+	//If we're here, then the start node at least is valid. For each direction, check if the neighbor is valid, if so return it
+	if(neighborDirection == North)
+	{
+		if(NodeIsInGrid(startNodeXGridPos,startNodeYGridPos - noOfJumps))
+		{
+			return &nodes[startNodeXGridPos][startNodeYGridPos - noOfJumps];
+		}
+	}
+	else if(neighborDirection == NorthEast)
+	{
+		if(NodeIsInGrid(startNodeXGridPos + noOfJumps,startNodeYGridPos - noOfJumps))
+		{
+			return &nodes[startNodeXGridPos + noOfJumps][startNodeYGridPos - noOfJumps];
+		}
+	}
+	else if(neighborDirection == East)
+	{
+		if(NodeIsInGrid(startNodeXGridPos + noOfJumps,startNodeYGridPos))
+		{
+			return &nodes[startNodeXGridPos + noOfJumps][startNodeYGridPos];
+		}
+	}
+	else if(neighborDirection == SouthEast)
+	{
+		if(NodeIsInGrid(startNodeXGridPos + noOfJumps,startNodeYGridPos + noOfJumps))
+		{
+			return &nodes[startNodeXGridPos + noOfJumps][startNodeYGridPos + noOfJumps];
+		}
+	}
+	else if(neighborDirection == South)
+	{
+		if(NodeIsInGrid(startNodeXGridPos,startNodeYGridPos + noOfJumps))
+		{
+			return &nodes[startNodeXGridPos][startNodeYGridPos + noOfJumps];
+		}
+	}
+	else if(neighborDirection == SouthWest)
+	{
+		if(NodeIsInGrid(startNodeXGridPos - noOfJumps,startNodeYGridPos + noOfJumps))
+		{
+			return &nodes[startNodeXGridPos - noOfJumps][startNodeYGridPos + noOfJumps];
+		}
+	}
+	else if(neighborDirection == West)
+	{
+		if(NodeIsInGrid(startNodeXGridPos - noOfJumps,startNodeYGridPos))
+		{
+			return &nodes[startNodeXGridPos - noOfJumps][startNodeYGridPos];
+		}
+	}
+	else if(neighborDirection == NorthWest)
+	{
+		if(NodeIsInGrid(startNodeXGridPos - noOfJumps,startNodeYGridPos - noOfJumps))
+		{
+			return &nodes[startNodeXGridPos - noOfJumps][startNodeYGridPos - noOfJumps];
+		}
+	}
+	else
+	{
+		std::cout << "Invalid Node Direction" << std::endl;
+	}
+
+	//If we get here, there isnt a node at the specified position, return null
+	std::cout << "Node neighbor not found, returning orignal node" << std::endl;
+	return &nodes[startNodeXGridPos][startNodeYGridPos];
+}
+
+std::vector<std::vector<PathFindingNode>>* PathFindingGrid::GetGrid()
+{
+	return &nodes;
 }
 
 void PathFindingGrid::Draw(sf::RenderWindow &window)
@@ -55,20 +149,9 @@ void PathFindingGrid::Draw(sf::RenderWindow &window)
 			window.draw(debugNodeSprites[i][j]);
 		}
 	}
-}
 
-PathFindingNode& PathFindingGrid::GetNode(int x, int y)
-{
-	if((x < nodes.size()) && (x >= 0))
-	{
-		if((y < nodes[x].size()) && (y >= 0))
-		{
-			return nodes[x][y];
-		}
-	}
-
-	std::cout << "Error, attempting to access a pathfinding node that isn't in the grid at X : " << x << " Y : " << y << std::endl << "Returning node (0, 0)." << std::endl;
-	return nodes[0][0];
+	nodeDebugCircle.setPosition(GetClosestNodeToPixelPos(sf::Mouse::getPosition(window).x,sf::Mouse::getPosition(window).y)->GetPosition());
+	window.draw(nodeDebugCircle);
 }
 
 void PathFindingGrid::Recalculate(std::vector<std::vector<Tile>> &mapTiles)
@@ -107,4 +190,63 @@ void PathFindingGrid::Recalculate(std::vector<std::vector<Tile>> &mapTiles)
 			}
 		}
 	}
+}
+
+bool PathFindingGrid::NodeIsInGrid(int startNodeXGridPos, int startNodeYGridPos)
+{
+	if((startNodeXGridPos < nodes.size()) && (startNodeXGridPos >= 0))
+	{
+		if((startNodeYGridPos < nodes[startNodeXGridPos].size()) && (startNodeYGridPos >= 0))
+		{
+			//this node is valid
+			return true;
+		}
+	}
+	return false;
+}
+
+bool PathFindingGrid::NodeIsInGrid(PathFindingNode node)
+{
+	if((node.GetNavGridPosition().x < nodes.size()) && (node.GetNavGridPosition().x >= 0))
+	{
+		if((node.GetNavGridPosition().y < nodes[node.GetNavGridPosition().x].size()) && (node.GetNavGridPosition().y >= 0))
+		{
+			//this node is valid
+			return true;
+		}
+	}
+	return false;
+}
+
+PathFindingNode* PathFindingGrid::GetClosestNodeToPixelPos(int x, int y)
+{
+	//Shift the x and y up and left half a grid interval to deal with the origin buisness
+	x = x + ((Tile::WIDTH/ NODE_SUBDIVISION_LEVEL)/2.0f);
+	y = y + ((Tile::HEIGHT/ NODE_SUBDIVISION_LEVEL)/2.0f);
+
+	int xRef = x / (((float)Tile::WIDTH) / (NODE_SUBDIVISION_LEVEL));
+	int yRef = y / (((float)Tile::HEIGHT) / (NODE_SUBDIVISION_LEVEL));
+
+	
+	//If the input is off the map, return the bounds
+	//The int casts are important else when it gets a negative xRef it'll overflow and return the wrong bound
+	if(xRef >= (int)nodes.size())
+	{
+		xRef = nodes.size() - 1;
+	}
+	if(xRef < 0)
+	{
+		xRef = 0;
+	}
+	if(yRef >= (int)nodes[xRef].size())
+	{
+		yRef = nodes[xRef].size() - 1; 
+	}
+	if(yRef < 0)
+	{
+		yRef = 0;
+	}
+
+	return &nodes[xRef][yRef];
+
 }

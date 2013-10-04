@@ -25,6 +25,11 @@ GameBoard::~GameBoard()
 {
 }
 
+PathFindingGrid* GameBoard::GetPathFindingGrid()
+{
+	return &pathFindingGrid;
+}
+
 void GameBoard::RecalculatePathfindingGrid()
 {
 	pathFindingGrid.Recalculate(map.GetTiles());

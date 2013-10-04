@@ -18,8 +18,8 @@ public:
 	~GameBoard();
 	
 	void Draw(sf::RenderWindow &window);
-
 	void RecalculatePathfindingGrid();
+	PathFindingGrid *GetPathFindingGrid();
 
 private:
 	PathFindingGrid pathFindingGrid;
