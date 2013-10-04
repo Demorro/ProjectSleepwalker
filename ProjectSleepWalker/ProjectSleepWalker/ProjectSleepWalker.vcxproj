@@ -91,6 +91,7 @@
     <ClCompile Include="MenuState.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="OptionsState.cpp" />
+    <ClCompile Include="PlayerInterface.cpp" />
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="PathFindingGrid.cpp" />
@@ -108,6 +109,7 @@
     <ClInclude Include="MenuState.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="OptionsState.h" />
+    <ClInclude Include="PlayerInterface.h" />
     <ClInclude Include="Stringify.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Tile.h" />
@@ -116,6 +118,7 @@
     <ClInclude Include="State.h" />
     <ClInclude Include="StateManager.h" />
     <ClInclude Include="Unit.h" />
+    <ClInclude Include="VectorMath.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
