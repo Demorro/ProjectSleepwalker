@@ -5,7 +5,6 @@
 #include <iostream>
 #include "Tile.h"
 #include "GameBoard.h"
-#include "PlayerInterface.h"
 
 #define DEFAULT_MAP_WIDTH 16
 #define DEFAULT_MAP_HEIGHT 9
@@ -35,9 +34,6 @@ private:
 
 	//The gameBoard
 	GameBoard gameBoard;
-
-	//The player interface
-	PlayerInterface playerInterface;
 
 	//Finds the delta time each frame. Multiply any time dependent action by deltaTime to get an action that moves at a speed independent of framerate
 	void FindDeltaTime();
