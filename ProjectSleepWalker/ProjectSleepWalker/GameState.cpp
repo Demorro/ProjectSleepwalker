@@ -1,4 +1,5 @@
 #include "GameState.h"
+#include "Application.h"
 
 GameState::GameState() 
 	: State(State::GAME_STATE), gameBoard(DEFAULT_MAP_WIDTH, DEFAULT_MAP_HEIGHT)
@@ -17,12 +18,15 @@ bool GameState::Load()
 
 void GameState::Update(sf::Event events, bool eventFired)
 {
+	playerInterface.Update(Application::GetWindow());
 	FindDeltaTime();
 }
 
 void GameState::Draw(sf::RenderWindow& window)
 {
 	gameBoard.Draw(window);
+	//Draw the interface on top
+	playerInterface.Draw(window);
 }
 
 void GameState::FindDeltaTime()

@@ -14,6 +14,8 @@ const std::string Texture::AUDIO_BUTTON = "../Assets/Images/States/Options/Audio
 const std::string Texture::HOW_TO_PLAY_BUTTON = "../Assets/Images/States/Help/ControlsButton.jpg";
 const std::string Texture::CONTROLS_BUTTON = "../Assets/Images/States/Help/HowToPlayButton.jpg";
 
+const std::string Texture::CURSOR = "../Assets/Images/Cursor/Cursor.gif";
+
 const std::string Texture::OPEN_NODE = "../Assets/Images/DebugImages/OpenNode.png";
 const std::string Texture::CLOSED_NODE = "../Assets/Images/DebugImages/ClosedNode.png";
 

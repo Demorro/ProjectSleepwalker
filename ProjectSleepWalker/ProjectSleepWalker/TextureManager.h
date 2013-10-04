@@ -72,6 +72,8 @@ public:
 	static const std::string HOW_TO_PLAY_BUTTON;
 	static const std::string CONTROLS_BUTTON;
 
+	static const std::string CURSOR;
+
 	static const std::string OPEN_NODE;
 	static const std::string CLOSED_NODE;
 
