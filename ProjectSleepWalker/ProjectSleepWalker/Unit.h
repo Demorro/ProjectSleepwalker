@@ -1,11 +1,16 @@
 #pragma once
 #include <SFML\Graphics.hpp>
 #include <string>
+#include <memory>
+#include "PathFindingNode.h"
+#include "PathFindingGrid.h"
+#include <iostream>
+#include <queue>
 
 class Unit : public sf::Sprite
 {
 public:
-	Unit();
+	Unit(PathFindingNode &nodeToStartOn);
 
 	~Unit();
 
@@ -22,6 +27,7 @@ public:
 	sf::Vector2f GetAcceleration();
 	sf::Vector2f GetVelocity();
 	sf::Vector2f GetMaxVelocity();
+	PathFindingNode* GetCurrentPathFindingNode();
 
 	// Setters
 	void SetCurHealth(int curHealth);
@@ -34,6 +40,9 @@ public:
 	void SetVelocity(float xVel, float yVel);
 	void SetMaxVelocity(float maxXVel, float maxYVel);
 
+	//Calculate path from this units position to the target
+	std::vector<PathFindingNode*> CalculatePathToTarget(PathFindingNode *targetNode, PathFindingGrid &fullNavGrid);
+
 private:
 	// Not using constants for properties unless absolutely necessary
 	std::string name;
@@ -44,4 +53,8 @@ private:
 	sf::Vector2f velocity;
 	sf::Vector2f acceleration;
 	sf::Vector2f maxVelocity;
+
+	//A reference to the current pathfinding node this unit is on.
+	PathFindingNode* currentNode;
+
 };

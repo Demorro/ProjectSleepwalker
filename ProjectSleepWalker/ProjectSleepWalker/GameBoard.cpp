@@ -6,6 +6,10 @@ GameBoard::GameBoard(int width, int height)
 	map.Generate();
 	RecalculatePathfindingGrid();
 
+	map.SetTile(4,0,Tile::CLIFF);
+	map.SetTile(4,1,Tile::CLIFF);
+	map.SetTile(4,2,Tile::CLIFF);
+	map.SetTile(4,3,Tile::CLIFF);
 	map.SetTile(4,4,Tile::CLIFF);
 	map.SetTile(4,5,Tile::CLIFF);
 	map.SetTile(4,6,Tile::CLIFF);
@@ -16,9 +20,21 @@ GameBoard::GameBoard(int width, int height)
 	map.SetTile(6,8,Tile::CLIFF);
 	map.SetTile(5,8,Tile::CLIFF);
 	map.SetTile(4,8,Tile::CLIFF);
+	map.SetTile(9,0,Tile::CLIFF);
+	map.SetTile(9,1,Tile::CLIFF);
 	map.SetTile(9,2,Tile::CLIFF);
+	map.SetTile(10,5,Tile::CLIFF);
+	map.SetTile(10,4,Tile::CLIFF);
+	map.SetTile(10,3,Tile::CLIFF);
 	map.SetTile(11,6,Tile::CLIFF);
 	map.SetTile(13,3,Tile::CLIFF);
+	map.SetTile(13,4,Tile::CLIFF);
+	map.SetTile(13,5,Tile::CLIFF);
+	map.SetTile(13,6,Tile::CLIFF);
+	map.SetTile(13,7,Tile::CLIFF);
+	map.SetTile(13,8,Tile::CLIFF);
+	map.SetTile(14,3,Tile::CLIFF);
+	map.SetTile(15,3,Tile::CLIFF);
 }
 
 GameBoard::~GameBoard()

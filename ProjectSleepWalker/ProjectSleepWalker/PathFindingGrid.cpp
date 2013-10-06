@@ -130,13 +130,13 @@ PathFindingNode* PathFindingGrid::GetNodeNeighbor(int startNodeXGridPos, int sta
 	}
 
 	//If we get here, there isnt a node at the specified position, return null
-	std::cout << "Node neighbor not found, returning orignal node" << std::endl;
-	return &nodes[startNodeXGridPos][startNodeYGridPos];
+	std::cout << "Node neighbor not found, NULL" << std::endl;
+	return NULL;
 }
 
-std::vector<std::vector<PathFindingNode>>* PathFindingGrid::GetGrid()
+std::vector<std::vector<PathFindingNode>> &PathFindingGrid::GetGrid()
 {
-	return &nodes;
+	return nodes;
 }
 
 void PathFindingGrid::Draw(sf::RenderWindow &window)
@@ -249,4 +249,103 @@ PathFindingNode* PathFindingGrid::GetClosestNodeToPixelPos(int x, int y)
 
 	return &nodes[xRef][yRef];
 
+}
+
+PathFindingNode* PathFindingGrid::FindClosestPathableNode(PathFindingNode* node, int range)
+{
+	if(node != NULL)
+	{
+		if(node->IsPathable())
+		{
+			//if the node is already pathable, return itself
+			return node;
+		}
+
+		PathFindingNode* currentNode;
+		PathFindingNode* candidateNode;
+		//The currentrange keeps track of how far out we are checking, dont go beyond the range specified.
+		int currentRange = 1;
+		currentNode = node;
+		while((currentNode->IsPathable() == false) && (currentRange <= range))
+		{
+			//North
+			candidateNode = GetNodeNeighbor(currentNode->GetNavGridPosition().x,currentNode->GetNavGridPosition().y,North,currentRange);
+			if(candidateNode != NULL)
+			{
+				if(candidateNode->IsPathable())
+				{
+					return candidateNode;
+				}
+			}
+			//East
+			candidateNode = GetNodeNeighbor(currentNode->GetNavGridPosition().x,currentNode->GetNavGridPosition().y,East,currentRange);
+			if(candidateNode != NULL)
+			{
+				if(candidateNode->IsPathable())
+				{
+					return candidateNode;
+				}
+			}
+			//South
+			candidateNode = GetNodeNeighbor(currentNode->GetNavGridPosition().x,currentNode->GetNavGridPosition().y,South,currentRange);
+			if(candidateNode != NULL)
+			{
+				if(candidateNode->IsPathable())
+				{
+					return candidateNode;
+				}
+			}
+			//West
+			candidateNode = GetNodeNeighbor(currentNode->GetNavGridPosition().x,currentNode->GetNavGridPosition().y,West,currentRange);
+			if(candidateNode != NULL)
+			{
+				if(candidateNode->IsPathable())
+				{
+					return candidateNode;
+				}
+			}
+			//North-East
+			candidateNode = GetNodeNeighbor(currentNode->GetNavGridPosition().x,currentNode->GetNavGridPosition().y,NorthEast,currentRange);
+			if(candidateNode != NULL)
+			{
+				if(candidateNode->IsPathable())
+				{
+					return candidateNode;
+				}
+			}
+			//South-East
+			candidateNode = GetNodeNeighbor(currentNode->GetNavGridPosition().x,currentNode->GetNavGridPosition().y,SouthEast,currentRange);
+			if(candidateNode != NULL)
+			{
+				if(candidateNode->IsPathable())
+				{
+					return candidateNode;
+				}
+			}
+			//South-West
+			candidateNode = GetNodeNeighbor(currentNode->GetNavGridPosition().x,currentNode->GetNavGridPosition().y,SouthWest,currentRange);
+			if(candidateNode != NULL)
+			{
+				if(candidateNode->IsPathable())
+				{
+					return candidateNode;
+				}
+			}
+			//North-West
+			candidateNode = GetNodeNeighbor(currentNode->GetNavGridPosition().x,currentNode->GetNavGridPosition().y,NorthWest,currentRange);
+			if(candidateNode != NULL)
+			{
+				if(candidateNode->IsPathable())
+				{
+					return candidateNode;
+				}
+			}
+
+			currentRange++;
+		}
+		std::cout << "Couldnt find pathable node within range, returning null" << std::endl;
+		return NULL;
+	}
+	std::cout << "Entered node to FindClosestPathableNode was invalid, returning null" << std::endl;
+	return NULL;
 }

@@ -6,6 +6,7 @@
 #include "Tile.h"
 #include "GameBoard.h"
 #include "PlayerInterface.h"
+#include "Survivor.h"
 
 #define DEFAULT_MAP_WIDTH 16
 #define DEFAULT_MAP_HEIGHT 9
@@ -32,6 +33,9 @@ public:
 	void Draw(sf::RenderWindow& window);
 
 private:
+	Survivor *testSurvivor;
+	std::vector<PathFindingNode*> debugPath;
+	bool debugPathDone;
 
 	//The gameBoard
 	GameBoard gameBoard;

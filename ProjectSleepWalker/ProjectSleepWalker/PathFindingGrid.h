@@ -25,11 +25,11 @@ public:
 	
 	//Returns a pointer to a particular node, returns null if the node is invalid
 	PathFindingNode* GetNode(int x, int y);
-	//Returns a pointer to a node neighbor. Returns null if there isnt a node (UNTESTED)
+	//Returns a pointer to a node neighbor. Returns null if there isnt a node
 	PathFindingNode* GetNodeNeighbor(int startNodeXGridPos, int startNodeYGridPos, PathFindingGrid::Direction neighborDirection, int noOfJumps = 1);
 
 	//Gets the entire grid
-	std::vector<std::vector<PathFindingNode>>* GetGrid();
+	std::vector<std::vector<PathFindingNode>> &GetGrid();
 
 	//A simple function that returns true if node is in grid, else it returns false, can pass in a grid reference or a node
 	bool NodeIsInGrid(int startNodeXGridPos, int startNodeYGridPos);
@@ -44,12 +44,17 @@ public:
 	// Recalculates all the collision on the nodes
 	void Recalculate(std::vector<std::vector<Tile>> &mapTiles);
 
+	//Finds the closest pathable node to the one entered. If the entered one is pathable it will just be retured as is.
+	PathFindingNode* FindClosestPathableNode(PathFindingNode* node, int range = 10);
+
+	std::vector<std::vector<sf::Sprite>> debugNodeSprites;
+
 private:
 	// The pathfinding node array, also known as the pathfinding grid
 	std::vector<std::vector<PathFindingNode>> nodes;
 
 	static const int NODE_SUBDIVISION_LEVEL = 4;
-	std::vector<std::vector<sf::Sprite>> debugNodeSprites;
+	
 
 	// Populates the grid
 	void Populate();
