@@ -22,7 +22,7 @@ public:
 	PathFindingGrid *GetPathFindingGrid();
 
 private:
-	PathFindingGrid pathFindingGrid;
+	PathFindingGrid navGrid;
 	Map map;
 	
 	void PopulateMap();

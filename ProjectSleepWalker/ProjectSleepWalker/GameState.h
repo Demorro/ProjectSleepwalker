@@ -18,7 +18,7 @@ public:
 	GameState();
 
 	/** Default destructor. */
-	~GameState();
+	~GameState(); 
 
 	/** 
 		Loads GameState content.

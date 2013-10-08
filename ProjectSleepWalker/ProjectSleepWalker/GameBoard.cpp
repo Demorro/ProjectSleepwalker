@@ -1,7 +1,7 @@
 #include "GameBoard.h"
 
 GameBoard::GameBoard(int width, int height) 
-	:	pathFindingGrid(width, height), map(width, height)
+	:	navGrid(width, height), map(width, height)
 {
 	map.Generate();
 	RecalculatePathfindingGrid();
@@ -43,12 +43,12 @@ GameBoard::~GameBoard()
 
 PathFindingGrid* GameBoard::GetPathFindingGrid()
 {
-	return &pathFindingGrid;
+	return &navGrid;
 }
 
 void GameBoard::RecalculatePathfindingGrid()
 {
-	pathFindingGrid.Recalculate(map.GetTiles());
+	navGrid.Recalculate(map.GetTiles());
 }
 
 void GameBoard::Draw(sf::RenderWindow &window)
@@ -60,7 +60,7 @@ void GameBoard::Draw(sf::RenderWindow &window)
 		//The pathfinding grid only draws when you hold G, pretty cool for demoing
 		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::G))
 		{
-			pathFindingGrid.Draw(window);
+			navGrid.Draw(window);
 		}
 	}
 }

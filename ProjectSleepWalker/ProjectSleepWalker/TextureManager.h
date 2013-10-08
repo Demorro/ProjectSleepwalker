@@ -81,6 +81,8 @@ public:
 	static const std::string GRASS_TILE;
 	static const std::string CLIFF_TILE;
 
+	static const std::string SURVIVOR_SPRITE;
+
 private:
 	Texture();
 	~Texture();

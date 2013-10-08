@@ -27,3 +27,13 @@ inline float VectorDotProduct(sf::Vector2f p1, sf::Vector2f p2)
 {
 	return ((p1.x * p2.x) + (p1.y * p2.y));
 }
+
+inline float VectorMagnitude(sf::Vector2f vector)
+{
+	return sqrt((vector.x * vector.x) + (vector.y * vector.y));
+}
+
+inline void NormaliseVector(sf::Vector2f &vector)
+{
+	vector /= VectorMagnitude(vector);
+}

@@ -23,6 +23,8 @@ const std::string Texture::EMPTY_TILE = "../Assets/Images/Tiles/EmptyTile.png";
 const std::string Texture::GRASS_TILE = "../Assets/Images/Tiles/Grass.png";
 const std::string Texture::CLIFF_TILE = "../Assets/Images/Tiles/Cliff.png";
 
+const std::string Texture::SURVIVOR_SPRITE = "../Assets/Images/Units/Survivor/TestSurvivor.png";
+
 // Empty hash map initially
 std::map<std::string, sf::Texture*> TextureManager::textureMap;
 

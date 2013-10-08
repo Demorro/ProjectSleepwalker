@@ -146,6 +146,14 @@ void PathFindingGrid::Draw(sf::RenderWindow &window)
 	{
 		for(int j = 0; j < debugNodeSprites[i].size(); j++)
 		{
+			if(nodes[i][j].IsPathable())
+			{
+				debugNodeSprites[i][j].setTexture(TextureManager::GetTexture(Texture::OPEN_NODE));
+			}
+			else
+			{
+				debugNodeSprites[i][j].setTexture(TextureManager::GetTexture(Texture::CLOSED_NODE));
+			}
 			window.draw(debugNodeSprites[i][j]);
 		}
 	}

@@ -91,6 +91,7 @@ void PlayerInterface::DisableBoxing()
 	boxingEnabled = false;
 }
 
+//The way we do no custom cursor is just by removing the system one and rendering a sprite, simple!s
 void PlayerInterface::HandleCustomCursor(sf::RenderWindow &window)
 {
 	if(customCursorEnabled)

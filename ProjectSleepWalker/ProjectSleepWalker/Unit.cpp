@@ -1,11 +1,20 @@
 #include "Unit.h"
 
-Unit::Unit(PathFindingNode &nodeToStartOn)
+Unit::Unit(PathFindingNode &nodeToStartOn, PathFindingGrid *navGridReference)
 {
 	std::string name = "DefaultUnitName";
 	maxHealth = curHealth = 0;
 
 	currentNode = &nodeToStartOn;
+	currentNode->SetPathable(false);
+
+	if(navGridReference == NULL)
+	{
+		std::cout << "Nav Grid not passed into Unit correctly, fuck." << std::endl;
+	}
+	navGrid = navGridReference;
+
+	nodeDistanceBeforeRecognition = 1.0f;
 }
 
 Unit::~Unit()
@@ -27,7 +36,6 @@ bool NodeIsValidForPathFinding(PathFindingNode *nodeToCheck)
 	}
 	return false;
 }
-
 void DoDirectionalPathFinding(PathFindingNode* adjacentNode, PathFindingNode* currentWorkingNode, PathFindingNode* targetNode, std::priority_queue<PathFindingNode*,std::vector<PathFindingNode*>,NodePointerCompareByFValue> &openList, bool diagonal)
 {
 	if(NodeIsValidForPathFinding(adjacentNode))
@@ -58,9 +66,8 @@ void DoDirectionalPathFinding(PathFindingNode* adjacentNode, PathFindingNode* cu
 		}
 	}
 }
-
-
-std::vector<PathFindingNode*> Unit::CalculatePathToTarget(PathFindingNode *targetNode, PathFindingGrid &fullNavGrid)
+//This is the A* imlementation. Probably the most important thing here
+std::vector<PathFindingNode*> Unit::CalculatePathToTarget(PathFindingNode *movementTargetNode, PathFindingGrid &fullNavGrid)
 {
 	std::priority_queue<PathFindingNode*,std::vector<PathFindingNode*>,NodePointerCompareByFValue> openList;
 	std::vector<PathFindingNode*> closedList;
@@ -69,10 +76,10 @@ std::vector<PathFindingNode*> Unit::CalculatePathToTarget(PathFindingNode *targe
 	closedList.empty();
 
 	//If the node isnt pathable, find the closest pathable node and use that. This is a good optimisation, as it prevents the inevitible recursion on nodes that are already tagged unpathable.
-	PathFindingNode* closestNode = fullNavGrid.FindClosestPathableNode(targetNode);
+	PathFindingNode* closestNode = fullNavGrid.FindClosestPathableNode(movementTargetNode);
 	if(closestNode != NULL)
 	{
-		targetNode = closestNode;
+		movementTargetNode = closestNode;
 	}
 	
 	//Switch the whole nav grid to nothing pathfinding wise
@@ -86,7 +93,7 @@ std::vector<PathFindingNode*> Unit::CalculatePathToTarget(PathFindingNode *targe
 
 	//In case the target path isn't possible to get to, we keep track of what node in the path has the lowest h score, and if there is no path, we simply generate a path to that instead.
 	//Should have the effect of trying to get as close as possible to the target. Need to calculate the startnode heuristic so it dosent just stick at 0
-	currentNode->CalculateHeuristic(*targetNode);
+	currentNode->CalculateHeuristic(*movementTargetNode);
 	PathFindingNode lowestHCost = *currentNode;
 
 	
@@ -126,9 +133,9 @@ std::vector<PathFindingNode*> Unit::CalculatePathToTarget(PathFindingNode *targe
 		closedList.push_back(currentWorkingNode);
 
 		//If the currentWorkingNode is the target node, then we have found the end
-		if(currentWorkingNode->GetNavGridPosition() == targetNode->GetNavGridPosition())
+		if(currentWorkingNode->GetNavGridPosition() == movementTargetNode->GetNavGridPosition())
 		{
-			targetNode->SetParentNode(currentWorkingNode->GetParentNode());
+			movementTargetNode->SetParentNode(currentWorkingNode->GetParentNode());
 			foundEnd = true;
 			break;
 		}
@@ -137,28 +144,28 @@ std::vector<PathFindingNode*> Unit::CalculatePathToTarget(PathFindingNode *targe
 		PathFindingNode* adjacentNode = NULL;
 		//North
 		adjacentNode = fullNavGrid.GetNodeNeighbor(currentWorkingNode->GetNavGridPosition().x, currentWorkingNode->GetNavGridPosition().y,PathFindingGrid::North);
-		DoDirectionalPathFinding(adjacentNode,currentWorkingNode,targetNode,openList,false);
+		DoDirectionalPathFinding(adjacentNode,currentWorkingNode,movementTargetNode,openList,false);
 		//North-East
 		adjacentNode = fullNavGrid.GetNodeNeighbor(currentWorkingNode->GetNavGridPosition().x, currentWorkingNode->GetNavGridPosition().y,PathFindingGrid::NorthEast);
-		DoDirectionalPathFinding(adjacentNode,currentWorkingNode,targetNode,openList,true);
+		DoDirectionalPathFinding(adjacentNode,currentWorkingNode,movementTargetNode,openList,true);
 		//East
 		adjacentNode = fullNavGrid.GetNodeNeighbor(currentWorkingNode->GetNavGridPosition().x, currentWorkingNode->GetNavGridPosition().y,PathFindingGrid::East);
-		DoDirectionalPathFinding(adjacentNode,currentWorkingNode,targetNode,openList,false);
+		DoDirectionalPathFinding(adjacentNode,currentWorkingNode,movementTargetNode,openList,false);
 		//South-East
 		adjacentNode = fullNavGrid.GetNodeNeighbor(currentWorkingNode->GetNavGridPosition().x, currentWorkingNode->GetNavGridPosition().y,PathFindingGrid::SouthEast);
-		DoDirectionalPathFinding(adjacentNode,currentWorkingNode,targetNode,openList,true);
+		DoDirectionalPathFinding(adjacentNode,currentWorkingNode,movementTargetNode,openList,true);
 		//South
 		adjacentNode = fullNavGrid.GetNodeNeighbor(currentWorkingNode->GetNavGridPosition().x, currentWorkingNode->GetNavGridPosition().y,PathFindingGrid::South);
-		DoDirectionalPathFinding(adjacentNode,currentWorkingNode,targetNode,openList,false);
+		DoDirectionalPathFinding(adjacentNode,currentWorkingNode,movementTargetNode,openList,false);
 		//South-West
 		adjacentNode = fullNavGrid.GetNodeNeighbor(currentWorkingNode->GetNavGridPosition().x, currentWorkingNode->GetNavGridPosition().y,PathFindingGrid::SouthWest);
-		DoDirectionalPathFinding(adjacentNode,currentWorkingNode,targetNode,openList,true);
+		DoDirectionalPathFinding(adjacentNode,currentWorkingNode,movementTargetNode,openList,true);
 		//West
 		adjacentNode = fullNavGrid.GetNodeNeighbor(currentWorkingNode->GetNavGridPosition().x, currentWorkingNode->GetNavGridPosition().y,PathFindingGrid::West);
-		DoDirectionalPathFinding(adjacentNode,currentWorkingNode,targetNode,openList,false);
+		DoDirectionalPathFinding(adjacentNode,currentWorkingNode,movementTargetNode,openList,false);
 		//North-West
 		adjacentNode = fullNavGrid.GetNodeNeighbor(currentWorkingNode->GetNavGridPosition().x, currentWorkingNode->GetNavGridPosition().y,PathFindingGrid::NorthWest);
-		DoDirectionalPathFinding(adjacentNode,currentWorkingNode,targetNode,openList,true);
+		DoDirectionalPathFinding(adjacentNode,currentWorkingNode,movementTargetNode,openList,true);
 
 	}
 
@@ -182,6 +189,81 @@ std::vector<PathFindingNode*> Unit::CalculatePathToTarget(PathFindingNode *targe
 		//Recursion Bitch! Seriously though, if we dont find an end, find the path to the lowest h score we found along the path
 		std::cout << "Couldn't find path, navigating to closest h score" << std::endl;
 		return CalculatePathToTarget(&lowestHCost,fullNavGrid);
+	}
+}
+
+
+//This is what you call to actually move to a point
+void Unit::MoveTo(PathFindingNode* targetMoveNode)
+{
+	if(targetMoveNode != NULL)
+	{
+		if(currentNode != targetMoveNode)
+		{
+			movementPath = CalculatePathToTarget(targetMoveNode,*navGrid);
+			if(movementPath.size() > 0)
+			{
+				movementTargetNode = movementPath.front();
+			}
+			else
+			{
+				std::cout << "There is no need to move to the target, unit is already there" << std::endl;
+				movementTargetNode = NULL;
+			}
+		}
+	}
+}
+
+
+//Runs the movement along the path
+void Unit::HandleMovement(float _deltaTime)
+{
+	if((currentNode != NULL) && (movementTargetNode != NULL))
+	{
+		//If we are wanting to move somewhere.
+		if((currentNode != movementTargetNode) && (movementPath.size() > 0))
+		{
+			PathFindingNode* nextNodeToGoTo = movementPath.back();
+			sf::Vector2f moveVector = (nextNodeToGoTo->GetPosition() - getPosition());
+
+			//If this isn't the last node on the path
+			NormaliseVector(moveVector);
+
+			moveVector.x *= GetMaxVelocity().x;
+			moveVector.y *= GetMaxVelocity().y;
+
+			moveVector *= _deltaTime;
+
+			move(moveVector);
+
+			
+			if(VectorDistance(getPosition(),nextNodeToGoTo->GetPosition()) < VectorMagnitude(moveVector))
+			{
+				currentNode->SetPathable(true);
+				currentNode = nextNodeToGoTo;
+				currentNode->SetPathable(false);
+				movementPath.pop_back();
+				
+				if(movementPath.size() == 0)
+				{
+					setPosition(currentNode->GetPosition());
+				}
+			}
+			
+		}
+	}
+}
+
+void Unit::MoveImmediatelyToNode(PathFindingNode* movementTargetNode)
+{
+	if(movementTargetNode != NULL)
+	{
+		setPosition(movementTargetNode->GetPosition());
+		currentNode = movementTargetNode;
+	}
+	else
+	{
+		std::cout << "Cannot move immediately to node, it dosen't seem to exist. Soz Bra!" << std::endl;
 	}
 }
 
