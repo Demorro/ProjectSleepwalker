@@ -15,6 +15,17 @@ Unit::Unit(PathFindingNode &nodeToStartOn, PathFindingGrid *navGridReference)
 	navGrid = navGridReference;
 
 	nodeDistanceBeforeRecognition = 1.0f;
+	
+
+	//You can set these to unit specific values in the child class if you like
+	selectionCircle.setFillColor(sf::Color::Transparent);
+	selectionCircle.setOutlineColor(sf::Color::White);
+	selectionCircle.setOutlineThickness(2.0f);
+	selectionCircle.setRadius(17.0f);
+	selectionCircle.setOrigin(selectionCircle.getRadius(), selectionCircle.getRadius());
+
+	selected = false;
+	shouldDrawSelectionCircle = false;
 }
 
 Unit::~Unit()
@@ -67,13 +78,20 @@ void DoDirectionalPathFinding(PathFindingNode* adjacentNode, PathFindingNode* cu
 	}
 }
 //This is the A* imlementation. Probably the most important thing here
-std::vector<PathFindingNode*> Unit::CalculatePathToTarget(PathFindingNode *movementTargetNode, PathFindingGrid &fullNavGrid)
+std::vector<PathFindingNode*> Unit::CalculatePathToTarget(PathFindingNode *movementTargetNode, PathFindingGrid &fullNavGrid, bool shouldCallRecursively = true)
 {
 	std::priority_queue<PathFindingNode*,std::vector<PathFindingNode*>,NodePointerCompareByFValue> openList;
 	std::vector<PathFindingNode*> closedList;
 
-	openList.empty();
-	closedList.empty();
+	//clear these just in case
+	while(openList.empty() == false)
+	{
+		openList.pop();
+	}
+	while(closedList.empty() == false)
+	{
+		closedList.pop_back();
+	}
 
 	//If the node isnt pathable, find the closest pathable node and use that. This is a good optimisation, as it prevents the inevitible recursion on nodes that are already tagged unpathable.
 	PathFindingNode* closestNode = fullNavGrid.FindClosestPathableNode(movementTargetNode);
@@ -106,8 +124,11 @@ std::vector<PathFindingNode*> Unit::CalculatePathToTarget(PathFindingNode *movem
 		std::cout << "Unit dosen't know what node it's on, can't pathfind." << std::endl;
 		return std::vector<PathFindingNode*>();
 	}
-	currentNode->SetIsOnOpenList(true);
-	openList.push(currentNode);
+	else
+	{
+		currentNode->SetIsOnOpenList(true);
+		openList.push(currentNode);
+	}
 	
 	//Keep track of this so if we dont find the end we can find the closest thing to it;
 	bool foundEnd = false;
@@ -188,7 +209,17 @@ std::vector<PathFindingNode*> Unit::CalculatePathToTarget(PathFindingNode *movem
 	{
 		//Recursion Bitch! Seriously though, if we dont find an end, find the path to the lowest h score we found along the path
 		std::cout << "Couldn't find path, navigating to closest h score" << std::endl;
-		return CalculatePathToTarget(&lowestHCost,fullNavGrid);
+		//this needs to only happen once
+		if(shouldCallRecursively)
+		{
+			return CalculatePathToTarget(&lowestHCost,fullNavGrid,false);
+		}
+		else
+		{
+			//No path found, return an empty path
+			std::cout << "No viable path found" << std::endl;
+			return std::vector<PathFindingNode*>();
+		}
 	}
 }
 
@@ -214,7 +245,6 @@ void Unit::MoveTo(PathFindingNode* targetMoveNode)
 	}
 }
 
-
 //Runs the movement along the path
 void Unit::HandleMovement(float _deltaTime)
 {
@@ -224,6 +254,13 @@ void Unit::HandleMovement(float _deltaTime)
 		if((currentNode != movementTargetNode) && (movementPath.size() > 0))
 		{
 			PathFindingNode* nextNodeToGoTo = movementPath.back();
+
+			//If the path is blocked, probably by a unit that has moved there, recalculate
+			if(nextNodeToGoTo->IsPathable() == false)
+			{
+				MoveTo(movementTargetNode);
+			}
+
 			sf::Vector2f moveVector = (nextNodeToGoTo->GetPosition() - getPosition());
 
 			//If this isn't the last node on the path
@@ -249,9 +286,9 @@ void Unit::HandleMovement(float _deltaTime)
 					setPosition(currentNode->GetPosition());
 				}
 			}
-			
 		}
 	}
+
 }
 
 void Unit::MoveImmediatelyToNode(PathFindingNode* movementTargetNode)
@@ -266,6 +303,25 @@ void Unit::MoveImmediatelyToNode(PathFindingNode* movementTargetNode)
 		std::cout << "Cannot move immediately to node, it dosen't seem to exist. Soz Bra!" << std::endl;
 	}
 }
+
+void Unit::Highlight()
+{
+	shouldDrawSelectionCircle = true;
+}
+void Unit::UnHightlight()
+{
+	shouldDrawSelectionCircle = false;
+}
+void Unit::Select()
+{
+	selected = true;
+	Highlight();
+}
+void Unit::Deselect()
+{
+	selected = false;
+}
+
 
 std::string Unit::GetName()
 {
@@ -307,6 +363,43 @@ PathFindingNode* Unit::GetCurrentPathFindingNode()
 	{
 		std::cout << "Current Node on this unit is null for some reason, this isn't so good" << std::endl;
 		return NULL;
+	}
+}
+
+bool Unit::IsSelected()
+{
+	return selected;
+}
+
+void Unit::HandleSelection(sf::RenderWindow &window, PlayerInterface *playerInterface, sf::Event events)
+{
+	selectionCircle.setPosition(getPosition());
+	sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+
+	if(playerInterface == NULL)
+	{
+		std::cout << "Failed to find interface in Unit Selection" << std::endl;
+		return;
+	}
+
+	//if this unit is under the mouse cursor, or in the selection box, highlight it
+	if( (getGlobalBounds().contains(sf::Vector2f(mousePos))) || ((playerInterface->GetSelectionBox().getGlobalBounds().intersects(getGlobalBounds())) && (playerInterface->SelectionBoxIsBeingDragged())))
+	{
+		Highlight();
+		if(events.type == sf::Event::MouseButtonReleased)
+		{
+			if(events.mouseButton.button == sf::Mouse::Left)
+			{
+				Select();
+			}
+		}
+	}
+	else
+	{
+		if(IsSelected() == false)
+		{
+			UnHightlight();
+		}
 	}
 }
 

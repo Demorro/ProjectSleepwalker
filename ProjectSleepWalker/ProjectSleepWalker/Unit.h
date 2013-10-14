@@ -8,6 +8,7 @@
 #include "SFML\System.hpp"
 #include <queue>
 #include "VectorMath.h"
+#include "PlayerInterface.h"
 
 class Unit : public sf::Sprite
 {
@@ -17,7 +18,7 @@ public:
 	~Unit();
 
 	/** Abstract function intended to act as main update loop. */
-	virtual void Update(float _deltaTime) = 0;
+	virtual void Update(float _deltaTime, sf::RenderWindow &window, sf::Event events) = 0;
 
 	/** Abstract function intended to render the unit and any components. */
 	virtual void Render(sf::RenderWindow &window) = 0;
@@ -30,6 +31,8 @@ public:
 	sf::Vector2f GetVelocity();
 	sf::Vector2f GetMaxVelocity();
 	PathFindingNode* GetCurrentPathFindingNode();
+	bool IsSelected();
+	//Selected means the unit has been clicked on and it ready to be given commands too or whatever
 
 	// Setters
 	void SetCurHealth(int curHealth);
@@ -44,6 +47,17 @@ public:
 
 	//The interface function that you call to actually order the unit to move
 	void MoveTo(PathFindingNode* movementTargetNode);
+
+	//Handles the unit selection, must be called every frame
+	void HandleSelection(sf::RenderWindow &window, PlayerInterface *playerInterface, sf::Event events);
+
+	//Call this when the unit gets selected, call deselect when it dosent
+	void Select();
+	void Deselect();
+
+	//These functions toggle whether a unit is highlighter, ie if it has the selection crap around it
+	void Highlight();
+	void UnHightlight();
 
 protected:
 
@@ -62,10 +76,14 @@ protected:
 	void HandleMovement(float _deltaTime);
 
 	//Calculate path from this units position to the target, A* This is the important one
-	std::vector<PathFindingNode*> CalculatePathToTarget(PathFindingNode *movementTargetNode, PathFindingGrid &fullNavGrid);
+	std::vector<PathFindingNode*> CalculatePathToTarget(PathFindingNode *movementTargetNode, PathFindingGrid &fullNavGrid, bool shouldCallRecursively);
 
 	//Teleports the unit to a node;
 	void MoveImmediatelyToNode(PathFindingNode* movementTargetNode);
+
+	//The circle that is displayed around the sprite when it is selected, remember you need to implement the rendering of this in the inherited class
+	sf::CircleShape selectionCircle;
+	bool shouldDrawSelectionCircle;
 
 private:
 	// Not using constants for properties unless absolutely necessary
@@ -73,6 +91,9 @@ private:
 
 	int curHealth;
 	int maxHealth;
+
+	//If this unit is currently selected or not, toggled via Select()/Deselect()
+	bool selected;
 
 	sf::Vector2f velocity;
 	sf::Vector2f acceleration;

@@ -100,6 +100,7 @@
     <ClCompile Include="State.cpp" />
     <ClCompile Include="StateManager.cpp" />
     <ClCompile Include="Unit.cpp" />
+    <ClCompile Include="UnitManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -120,6 +121,7 @@
     <ClInclude Include="State.h" />
     <ClInclude Include="StateManager.h" />
     <ClInclude Include="Unit.h" />
+    <ClInclude Include="UnitManager.h" />
     <ClInclude Include="VectorMath.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

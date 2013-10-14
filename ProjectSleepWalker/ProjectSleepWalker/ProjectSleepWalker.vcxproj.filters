@@ -87,6 +87,9 @@
     <ClCompile Include="Survivor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UnitManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameBoard.h">
@@ -144,6 +147,9 @@
       <Filter>Header Files\System</Filter>
     </ClInclude>
     <ClInclude Include="Survivor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UnitManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

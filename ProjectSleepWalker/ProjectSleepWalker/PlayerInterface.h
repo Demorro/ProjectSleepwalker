@@ -24,6 +24,9 @@ public:
 	void EnableCustomCursor(sf::RenderWindow &window);
 	void DisableCustomCursor(sf::RenderWindow &window);
 
+	sf::RectangleShape GetSelectionBox();
+	bool SelectionBoxIsBeingDragged();
+
 private:
 
 	//If the custom cursor is enabled or not, if not it will just be a reg'lar old windows cursor

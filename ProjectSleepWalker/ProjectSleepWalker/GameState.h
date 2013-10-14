@@ -7,6 +7,7 @@
 #include "GameBoard.h"
 #include "PlayerInterface.h"
 #include "Survivor.h"
+#include "UnitManager.h"
 
 #define DEFAULT_MAP_WIDTH 16
 #define DEFAULT_MAP_HEIGHT 9
@@ -33,9 +34,9 @@ public:
 	void Draw(sf::RenderWindow& window);
 
 private:
-	Survivor *testSurvivor;
-	std::vector<PathFindingNode*> debugPath;
-	bool debugPathDone;
+	
+	//The unit controller, owns all the units and handles creation/deletion
+	UnitManager unitManager;
 
 	//The gameBoard
 	GameBoard gameBoard;

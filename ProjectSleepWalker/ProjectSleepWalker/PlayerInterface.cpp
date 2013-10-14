@@ -46,12 +46,23 @@ void PlayerInterface::Draw(sf::RenderWindow& window)
 	}
 }
 
+sf::RectangleShape PlayerInterface::GetSelectionBox()
+{
+	return selectionBox;
+}
+
+bool PlayerInterface::SelectionBoxIsBeingDragged()
+{
+	return isDraggingBox;
+}
+
 void PlayerInterface::HandleSelectionBoxDrags(sf::RenderWindow& window)
 {
 	if(boxingEnabled)
 	{
 		if(sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && (isDraggingBox == false))
 		{
+			selectionBox.setSize(sf::Vector2f(0,0));
 			boxStartPos = sf::Mouse::getPosition(window);
 			isDraggingBox = true;
 			selectionBox.setPosition((float)boxStartPos.x,(float)boxStartPos.y);

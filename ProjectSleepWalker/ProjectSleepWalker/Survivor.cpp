@@ -18,7 +18,7 @@ Survivor::~Survivor(void)
 {
 }
 
-void Survivor::Update(float _deltaTime)
+void Survivor::Update(float _deltaTime, sf::RenderWindow &window, sf::Event events)
 {
 	//Check the units on a node, if not put it on one
 	if(currentNode == NULL)
@@ -26,13 +26,30 @@ void Survivor::Update(float _deltaTime)
 		MoveImmediatelyToNode(navGrid->GetClosestNodeToPixelPos(getPosition().x, getPosition().y));
 	}
 
+	//Issue movement orders if needed, but only if selected
+	if(IsSelected())
+	{
+		if (events.type == sf::Event::MouseButtonPressed)
+		{
+			if (events.mouseButton.button == sf::Mouse::Right)
+			{
+				MoveTo(navGrid->GetClosestNodeToPixelPos(sf::Mouse::getPosition(window).x,sf::Mouse::getPosition(window).y));
+			}
+		}
+	}
+
 	//Movement
 	HandleMovement(_deltaTime);
+
 }
 
 
 
 void Survivor::Render(sf::RenderWindow &window)
 {
+	if(shouldDrawSelectionCircle)
+	{
+		window.draw(selectionCircle);
+	}
 	window.draw(*this);
 }
